@@ -1,0 +1,21 @@
+{
+  "name": "torches-protocol",
+  "version": "0.2.1",
+  "description": "The Torches Money Market",
+  "main": "index.js",
+  "scripts": {
+    "genabi": "rm -rf ABI && truffle compile && truffle-abi -d build/contracts/ -o abi",
+    "size": "truffle run contract-size"
+  },
+  "repository": "https://github.com/TorchesFinance/torches-protocol.git",
+  "author": "Torches",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "bignumber.js": "8.0.1",
+    "eth-gas-reporter": "^0.2.22",
+    "truffle-contract-size": "^2.0.1"
+  },
+  "dependencies": {
+    "@truffle/hdwallet-provider": "^1.4.0"
+  }
+}
