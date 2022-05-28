@@ -197,4 +197,25 @@ contract CompoundLens {
         shortfall = accountLimits.shortfall;
         markets = accountLimits.markets;
     }
+
+    function getCompBalanceWithAccrued(EIP20Interface comp, ComptrollerLensInterface comptroller, address account) external returns (uint balance, uint allocated) {
+        balance = comp.balanceOf(account);
+        comptroller.claimComp(account);
+        uint newBalance = comp.balanceOf(account);
+        uint accrued = comptroller.compAccrued(account);
+        uint total = add(accrued, newBalance, "sum comp total");
+        allocated = sub(total, balance, "sub allocated");
+    }
+
+    function add(uint a, uint b, string memory errorMessage) internal pure returns (uint) {
+        uint c = a + b;
+        require(c >= a, errorMessage);
+        return c;
+    }
+
+    function sub(uint a, uint b, string memory errorMessage) internal pure returns (uint) {
+        require(b <= a, errorMessage);
+        uint c = a - b;
+        return c;
+    }
 }
