@@ -44,7 +44,7 @@ contract CWrappedNative is TToken, CErc20Storage {
      */
     function mint() external payable {
         (uint err,) = mintInternal(msg.value);
-        requireNoError(err, "mint failed");
+        requireNoError(err, "!m");
     }
     /**
      * @notice Sender redeems cTokens in exchange for the underlying asset
@@ -81,7 +81,7 @@ contract CWrappedNative is TToken, CErc20Storage {
      */
     function repayBorrow() external payable {
         (uint err,) = repayBorrowInternal(msg.value);
-        requireNoError(err, "!repayBorrow");
+        requireNoError(err, "!r");
     }
 
     /**
@@ -91,7 +91,7 @@ contract CWrappedNative is TToken, CErc20Storage {
      */
     function repayBorrowBehalf(address borrower) external payable {
         (uint err,) = repayBorrowBehalfInternal(borrower, msg.value);
-        requireNoError(err, "!repayBorrowBehalf");
+        requireNoError(err, "!r");
     }
 
     /**
@@ -103,7 +103,7 @@ contract CWrappedNative is TToken, CErc20Storage {
      */
     function liquidateBorrow(address borrower, CToken cTokenCollateral) external payable {
         (uint err,) = liquidateBorrowInternal(borrower, msg.value, cTokenCollateral);
-        requireNoError(err, "!liquidateBorrow");
+        requireNoError(err, "!l");
     }
 
 
@@ -147,7 +147,7 @@ contract CWrappedNative is TToken, CErc20Storage {
      */
     function doTransferIn(address from, uint amount) internal returns (uint) {
         // Sanity checks
-        require(msg.sender == from, "sender mismatch");
+        require(msg.sender == from);
         require(msg.value == amount, "value mismatch");
         IWETH nativeWrapper = IWETH(underlying);
         nativeWrapper.deposit.value(amount)();
@@ -176,7 +176,7 @@ contract CWrappedNative is TToken, CErc20Storage {
         nativeWrapper.transferFrom(receiver, address(this), amount);
 
         uint balanceAfter = nativeWrapper.balanceOf(address(this));
-        require(balanceAfter >= balanceBefore, "TRANSFER_IN_OVERFLOW");
+        require(balanceAfter >= balanceBefore);
         require(balanceAfter - balanceBefore == amount, "!amount");
     }
 
@@ -206,7 +206,7 @@ contract CWrappedNative is TToken, CErc20Storage {
     }
 
     function validateFlashloanToken(address token) view internal {
-        require(underlying == token, "!flashloan token");
+        require(underlying == token);
     }
 
     function() external payable {

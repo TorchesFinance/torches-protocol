@@ -167,10 +167,6 @@ contract Torchestroller is Comptroller {
         // Pausing is a very serious situation - we revert to sound the alarms
         require(!mintGuardianPaused[cToken]);
 
-        // Shh - currently unused
-        minter;
-        mintAmount;
-
         if (!markets[cToken].isListed) {
             return uint(Error.MARKET_NOT_LISTED);
         }
@@ -243,17 +239,17 @@ contract Torchestroller is Comptroller {
     }
 
     /**
- * @notice Determine what the account liquidity would be if the given amounts were redeemed/borrowed
- * @param cTokenModify The market to hypothetically redeem/borrow in
- * @param account The account to determine liquidity for
- * @param redeemTokens The number of tokens to hypothetically redeem
- * @param borrowAmount The amount of underlying to hypothetically borrow
- * @dev Note that we calculate the exchangeRateStored for each collateral cToken using stored data,
- *  without calculating accumulated interest.
- * @return (possible error code,
-            hypothetical account liquidity in excess of collateral requirements,
- *          hypothetical account shortfall below collateral requirements)
- */
+    * @notice Determine what the account liquidity would be if the given amounts were redeemed/borrowed
+    * @param cTokenModify The market to hypothetically redeem/borrow in
+    * @param account The account to determine liquidity for
+    * @param redeemTokens The number of tokens to hypothetically redeem
+    * @param borrowAmount The amount of underlying to hypothetically borrow
+    * @dev Note that we calculate the exchangeRateStored for each collateral cToken using stored data,
+    *  without calculating accumulated interest.
+    * @return (possible error code,
+                hypothetical account liquidity in excess of collateral requirements,
+    *          hypothetical account shortfall below collateral requirements)
+    */
     function getHypotheticalAccountLiquidityInternal(
         address account,
         CToken cTokenModify,
