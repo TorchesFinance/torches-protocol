@@ -64,11 +64,11 @@ module.exports = {
     // }
 
       kcctest: {
-          provider: () => new HDWalletProvider(mnemonic, `wss://rpc-ws-testnet.kcc.network`),
-          // provider: () => new HDWalletProvider(mnemonic, `https://stardust.metis.io/?owner=588`),
+          // provider: () => new HDWalletProvider(mnemonic, `wss://rpc-ws-testnet.kcc.network`),
+          provider: () => new HDWalletProvider(mnemonic, `https://rpc-testnet.kcc.network`),
           network_id: 322,
           production: false,
-          timeoutBlocks: 200,
+          timeoutBlocks: 20000,
           skipDryRun: true,
           gasPrice: 2100000000,
           pollingInterval: 16000,

@@ -75,7 +75,8 @@ contract TorchesConfig is Ownable, Exponential {
     constructor(TorchesConfig previousQsConfig) public {
         safetyGuardian = msg.sender;
         if (address(previousQsConfig) == address(0x0)) return;
-
+       
+        safetyGuardian = previousQsConfig.safetyGuardian();
         compToken = previousQsConfig.compToken();
         safetyVaultRatio = previousQsConfig.safetyVaultRatio();
         safetyVault = previousQsConfig.safetyVault();
