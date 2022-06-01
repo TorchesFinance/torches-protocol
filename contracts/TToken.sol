@@ -96,6 +96,9 @@ contract TToken is CToken {
         accountTokens[liquidator] = vars.liquidatorTokensNew;
         accountTokens[safetyVault] = vars.safetyVaultTokensNew;
 
+        notifySavingsChange(borrower);
+        notifySavingsChange(liquidator);
+        notifySavingsChange(safetyVault);
         /* Emit a Transfer event */
         emit Transfer(borrower, liquidator, vars.liquidatorSeizeTokens);
         emit Transfer(borrower, safetyVault, vars.safetyVaultTokens);
