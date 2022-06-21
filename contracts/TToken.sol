@@ -46,6 +46,7 @@ contract TToken is CToken {
             notifySavingsChange(src);
             notifySavingsChange(dst);
         }
+        return errorCode;
     }
 
     function seizeInternal(address seizerToken, address liquidator, address borrower, uint seizeTokens) internal returns (uint) {
