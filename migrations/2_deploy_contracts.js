@@ -14,8 +14,8 @@ const MockWETH = artifacts.require("MockWETH");
 
 // Parameters
 const closeFactor = 0.5e18.toString();
-const liquidationIncentive = 1.13e18.toString();
-const reserveFactor = 0.3e18.toString();
+const liquidationIncentive = 1.1e18.toString();
+const reserveFactor = 0.6e18.toString();
 
 // 20 * 60 * 24 * 365 (BlockTime: 3s)
 let blocksPerYear = 10512000;
@@ -45,7 +45,6 @@ module.exports = async function(deployer, network) {
     const multiplierPerYear = 0.3e18.toString();
     const jumpMultiplierPerYear = 5e18.toString();
     const kink = 0.9e18.toString();
-    const reserveFactor = 0.2e18.toString();
 
     let proxiedTorchestroller = await Torchestroller.at(Unitroller.address);
 
@@ -66,7 +65,7 @@ module.exports = async function(deployer, network) {
         let kcsPriceSource = "0xae3DB39196012a7bF6D38737192F260cdFE1E7Ec";
         if (network == "kcc") {
             kcsToken = "0x4446fc4eb47f2f6586f9faab68b3498f86c07521";
-            kcsPriceSource = "";
+            kcsPriceSource = "0xAFC9c849b1a784955908d91EE43A3203fBC1f950";
         }
         await deployer.deploy(ChainLinkPriceOracle, kcsPriceSource);
         let priceOracleAddress = ChainLinkPriceOracle.address;
