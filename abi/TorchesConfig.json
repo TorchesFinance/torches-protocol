@@ -2,7 +2,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract BencuConfig",
+        "internalType": "contract TorchesConfig",
         "name": "previousQsConfig",
         "type": "address"
       }
@@ -142,6 +142,25 @@
       }
     ],
     "name": "NewFlashLoanCap",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "oldLiquidityGauge",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newLiquidityGauage",
+        "type": "address"
+      }
+    ],
+    "name": "NewLiquidityGauge",
     "type": "event"
   },
   {
@@ -382,6 +401,21 @@
   {
     "constant": true,
     "inputs": [],
+    "name": "liquidityGauge",
+    "outputs": [
+      {
+        "internalType": "contract ILiquidityGauge",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
     "name": "owner",
     "outputs": [
       {
@@ -400,7 +434,7 @@
     "name": "pendingSafetyGuardian",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "address payable",
         "name": "",
         "type": "address"
       }
@@ -424,7 +458,7 @@
     "name": "safetyGuardian",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "address payable",
         "name": "",
         "type": "address"
       }
@@ -628,7 +662,7 @@
     "constant": false,
     "inputs": [
       {
-        "internalType": "address",
+        "internalType": "address payable",
         "name": "newPendingSafetyGuardian",
         "type": "address"
       }
@@ -931,6 +965,21 @@
       }
     ],
     "name": "_setFlashLoanFeeRatio",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "contract ILiquidityGauge",
+        "name": "_liquidityGauge",
+        "type": "address"
+      }
+    ],
+    "name": "_setliquidityGauge",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",

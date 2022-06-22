@@ -690,21 +690,6 @@
   },
   {
     "constant": true,
-    "inputs": [],
-    "name": "bencuConfig",
-    "outputs": [
-      {
-        "internalType": "contract BencuConfig",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
     "inputs": [
       {
         "internalType": "address",
@@ -1507,6 +1492,21 @@
     "type": "function"
   },
   {
+    "constant": true,
+    "inputs": [],
+    "name": "torchesConfig",
+    "outputs": [
+      {
+        "internalType": "contract TorchesConfig",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "constant": false,
     "inputs": [
       {
@@ -1561,12 +1561,12 @@
     "constant": false,
     "inputs": [
       {
-        "internalType": "contract BencuConfig",
-        "name": "_bencuConfig",
+        "internalType": "contract TorchesConfig",
+        "name": "_torchesConfig",
         "type": "address"
       }
     ],
-    "name": "_setBencuConfig",
+    "name": "_setTorchesConfig",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",

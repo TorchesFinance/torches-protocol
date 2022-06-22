@@ -1282,6 +1282,21 @@
     "constant": false,
     "inputs": [
       {
+        "internalType": "contract EIP20NonStandardInterface",
+        "name": "token",
+        "type": "address"
+      }
+    ],
+    "name": "sweepToken",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
         "internalType": "address payable",
         "name": "newPendingAdmin",
         "type": "address"
@@ -1380,6 +1395,11 @@
   {
     "constant": false,
     "inputs": [
+      {
+        "internalType": "address payable",
+        "name": "to",
+        "type": "address"
+      },
       {
         "internalType": "uint256",
         "name": "reduceAmount",

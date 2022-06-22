@@ -76,14 +76,16 @@ module.exports = {
       },
 
       kcc: {
-          provider: () => new HDWalletProvider(mnemonic, `wss://rpc-ws-mainnet.kcc.network`),
+          // provider: () => new HDWalletProvider(mnemonic, `wss://rpc-ws-mainnet.kcc.network`),
+          provider: () => new HDWalletProvider(mnemonic, `https://rpc-mainnet.kcc.network`),
           network_id: "321",   // This network is yours, in the cloud.
           timeoutBlocks: 200,
           gasPrice: 2100000000,
-          gas: 55000000,
+          // gas: 55000000,
           skipDryRun: true,
           pollingInterval: 16000,
-          networkCheckTimeout: 100000000
+          networkCheckTimeout: 100000000,
+          websockets: true
       },
   },
   plugins: ["truffle-contract-size"],
