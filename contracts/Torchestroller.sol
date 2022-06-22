@@ -5,8 +5,6 @@ import "./compound/EIP20Interface.sol";
 import "./TorchesConfig.sol";
 
 contract Torchestroller is Comptroller {
-    /// @notice Emitted when an admin delists a market
-    event MarketDelisted(CToken cToken);
 
     TorchesConfig public torchesConfig;
 
