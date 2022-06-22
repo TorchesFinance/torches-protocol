@@ -15,7 +15,7 @@ contract CommonJumpInterestModel is InterestRateModel {
     /**
      * @notice The approximate number of blocks per year that is assumed by the interest rate model
      */
-    uint public blocksPerYear = 15768000;
+    uint public blocksPerYear = 10512000;
 
     /**
      * @notice The multiplier of utilization rate that gives the slope of the interest rate
