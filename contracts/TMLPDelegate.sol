@@ -11,7 +11,7 @@ import "./MasterChefV2.sol";
  * @title mojito LP Contract
  * @notice TToken which wraps mojito's LP token
  */
-contract CTMLPDelegate is CErc20Delegate {
+contract TMLPDelegate is CErc20Delegate {
     /**
      * @notice mojitoPool
      */
