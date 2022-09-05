@@ -63,6 +63,7 @@ contract TMLPDelegate is CErc20Delegate {
         mojitoPool = MasterChefV2(poolAddress_);
         MasterChefV2.PoolInfo memory poolInfo = mojitoPool.poolInfo(pid_);
         require(underlying == address(poolInfo.lpToken), "mismatch underlying");
+        require(pid_ != 0, "pid 0 is MJT");
 
         pid = pid_;
 
@@ -78,7 +79,10 @@ contract TMLPDelegate is CErc20Delegate {
                     break;
                 }
             }
-            if (!exist) rewardsTokens.push(rewardToken);
+            if (!exist) {
+                require(rewardToken != underlying, "the reward token can not be underlying token");
+                rewardsTokens.push(rewardToken);
+            }
         }
 
         // Approve moving our LP into the pool contract.
@@ -262,6 +266,18 @@ contract TMLPDelegate is CErc20Delegate {
         claimRewards(msg.sender);
 
         return redeemUnderlyingInternal(redeemAmount);
+    }
+
+    /**
+     * @notice A public function to sweep accidental ERC-20 transfers to this contract. Tokens are sent to admin (timelock)
+     * @param token The address of the ERC-20 token to sweep
+     */
+    function sweepToken(EIP20NonStandardInterface token) public {
+        for (uint8 i = 0; i < rewardsTokens.length; i++) {
+            require(address(token) != rewardsTokens[i], "can not sweep reward token");
+        }
+
+        super.sweepToken(token);
     }
 
     /*** Internal functions ***/
