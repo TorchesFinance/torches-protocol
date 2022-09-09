@@ -7,7 +7,7 @@ import "./CErc20.sol";
  * @notice CTokens which wrap an EIP-20 underlying and are delegated to
  * @author Compound
  */
-contract CErc20Delegate is CErc20, CDelegateInterface {
+contract CErc20Delegate is CErc20 {
     /**
      * @notice Construct an empty delegate
      */
@@ -27,6 +27,9 @@ contract CErc20Delegate is CErc20, CDelegateInterface {
         }
 
         require(msg.sender == admin, "only the admin may call _becomeImplementation");
+
+        // Set internal cash when becoming implementation
+        internalCash = getCashOnChain();
     }
 
     /**

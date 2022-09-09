@@ -260,6 +260,7 @@ contract CErc20Interface is CErc20Storage {
     function repayBorrowBehalf(address borrower, uint repayAmount) external returns (uint);
     function liquidateBorrow(address borrower, uint repayAmount, CTokenInterface cTokenCollateral) external returns (uint);
     function sweepToken(EIP20NonStandardInterface token) external;
+    function gulp() external;
 
     /*** Admin Functions ***/
 
@@ -271,6 +272,13 @@ contract CDelegationStorage {
      * @notice Implementation address for this contract
      */
     address public implementation;
+}
+
+contract CDelegationStorageExtension is CDelegationStorage {
+    /**
+    * @notice Internal cash counter for this CToken. Should equal underlying.balanceOf(address(this)) for CERC20.
+    */
+    uint256 public internalCash;
 }
 
 contract CDelegatorInterface is CDelegationStorage {
@@ -289,6 +297,20 @@ contract CDelegatorInterface is CDelegationStorage {
 }
 
 contract CDelegateInterface is CDelegationStorage {
+    /**
+     * @notice Called by the delegator on a delegate to initialize it for duty
+     * @dev Should revert if any issues arise which make it unfit for delegation
+     * @param data The encoded bytes data for any initialization
+     */
+    function _becomeImplementation(bytes memory data) public;
+
+    /**
+     * @notice Called by the delegator on a delegate to forfeit its responsibility
+     */
+    function _resignImplementation() public;
+}
+
+contract CCapableDelegateInterface is CDelegationStorageExtension {
     /**
      * @notice Called by the delegator on a delegate to initialize it for duty
      * @dev Should revert if any issues arise which make it unfit for delegation
