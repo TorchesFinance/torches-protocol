@@ -7,6 +7,7 @@ import "../CToken.sol";
 import "../PriceOracle.sol";
 import "../EIP20Interface.sol";
 import "../SafeMath.sol";
+import "../../TMLPDelegate.sol";
 
 interface ComptrollerLensInterface {
     function markets(address) external view returns (bool, uint);
@@ -205,6 +206,59 @@ contract CompoundLens {
         uint accrued = comptroller.compAccrued(account);
         uint total = add(accrued, newBalance, "sum comp total");
         allocated = sub(total, balance, "sub allocated");
+    }
+
+    function getLpRewardPending(address lpTtoken, uint8 rewardTokenCount, address account) public returns (uint[] memory rewards) {
+        TMLPDelegate delegate = TMLPDelegate(lpTtoken);
+
+        uint[] memory rewardTokensBalance = new uint[](rewardTokenCount);
+        for (uint8 i = 0; i < rewardTokenCount; i++) {
+            rewardTokensBalance[i] = CErc20(delegate.rewardsTokens(i)).balanceOf(account);
+        }
+
+        delegate.claimRewards(account);
+        rewards = new uint[](rewardTokenCount);
+        for (uint8 i = 0; i < rewardTokenCount; i++) {
+            rewards[i] = sub(CErc20(delegate.rewardsTokens(i)).balanceOf(account), rewardTokensBalance[i], "sub allocated");
+        }
+    }
+
+    struct TMLPAPYParam {
+        MasterChefV2 pool;
+        uint reward;
+        uint totalAllocPoint;
+        uint stakeReward;
+        uint farmReward;
+        uint stakeApr;
+        uint farmApr;
+        uint256 tokenPerSec;
+    }
+
+    function getTMLPAPY(TMLPDelegate lp, uint mojitoPrice, uint priceB, uint priceLp) public view returns(uint apyA, uint apyB) {
+        TMLPAPYParam memory vars;
+
+        vars.pool = lp.mojitoPool();
+        // reward per block
+        vars.reward = vars.pool.reward(block.number);
+        vars.totalAllocPoint = vars.pool.totalAllocPoint();
+
+        MasterChefV2.PoolInfo memory poolInfo = vars.pool.poolInfo(lp.pid());
+        MasterChefV2.PoolInfo memory stakeInfo = vars.pool.poolInfo(0);
+
+        // 3 seconds per block
+        // 60 * 60 * 24 / 3 = 28800
+        vars.stakeReward = vars.reward.mul(stakeInfo.allocPoint).div(vars.totalAllocPoint);
+        vars.farmReward = vars.reward.mul(poolInfo.allocPoint).div(vars.totalAllocPoint);
+
+        vars.stakeApr = vars.stakeReward.mul(1e8).mul(28800).div(stakeInfo.lpToken.balanceOf(address(vars.pool)));
+        vars.farmApr = vars.farmReward.mul(1e8).mul(28800).div(poolInfo.lpToken.balanceOf(address(vars.pool))).mul(mojitoPrice).div(priceLp);
+
+        apyA = add(vars.farmApr, vars.farmApr.mul(vars.stakeApr).div(1e8), "apr err");
+
+        if (address(poolInfo.rewarder) != address(0)) {
+            vars.tokenPerSec = poolInfo.rewarder.tokenPerSec();
+            apyB = vars.tokenPerSec.mul(1e8).mul(86400).div(poolInfo.lpToken.balanceOf(address(vars.pool))).mul(priceB).div(priceLp);
+        }
     }
 
     function add(uint a, uint b, string memory errorMessage) internal pure returns (uint) {

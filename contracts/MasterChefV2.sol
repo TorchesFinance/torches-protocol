@@ -29,4 +29,7 @@ interface MasterChefV2 {
 
     function enterStaking(uint256 _amount) external;
     function leaveStaking(uint256 _amount) external;
+
+    function totalAllocPoint() external view returns(uint256);
+    function reward(uint256 blockNumber) external view returns (uint256);
 }

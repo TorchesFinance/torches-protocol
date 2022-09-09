@@ -8,4 +8,6 @@ interface IRewarder {
     function pendingTokens(address user) external view returns (uint256 pending);
 
     function rewardToken() external view returns (EIP20Interface);
+
+    function tokenPerSec() external view returns(uint256);
 }
