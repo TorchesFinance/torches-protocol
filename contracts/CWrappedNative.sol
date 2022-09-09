@@ -124,14 +124,15 @@ contract CWrappedNative is TToken, CErc20Storage, CCapableDelegateInterface {
         uint256 cashOnChain = getCashOnChain();
         uint256 cashPrior = getCashPrior();
         uint256 excessCash = sub_(cashOnChain, cashPrior);
-        totalReserves = add_(totalReserves, excessCash);
+        uint256 totalReservesNew = add_(totalReserves, excessCash);
 
         uint256 balance = address(this).balance;
         if (balance > 0) {
             IWETH(underlying).deposit.value(balance)();
-            totalReserves = add_(totalReserves, balance);
+            totalReserves = add_(totalReservesNew, balance);
             internalCash = add_(cashOnChain,balance);
         } else {
+            totalReserves = totalReservesNew;
             internalCash = cashOnChain;
         }
     }
