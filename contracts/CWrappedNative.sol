@@ -188,11 +188,12 @@ contract CWrappedNative is TToken, CErc20Storage, CCapableDelegateInterface {
     }
 
     function doTransferOut(address payable to, uint amount) internal {
+        // Update the internal cash.
+        internalCash = sub_(internalCash, amount);
         /* Send the Ether, with minimal gas and revert on failure */
         IWETH nativeWrapper = IWETH(underlying);
         nativeWrapper.withdraw(amount);
         to.transfer(amount);
-        internalCash = sub_(internalCash, amount);
     }
 
     function doFlashLoanTransferOut(address payable receiver, address wrapperToken, uint amount) internal {

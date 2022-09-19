@@ -209,6 +209,8 @@ contract CErc20 is TToken, CErc20Interface, CCapableDelegateInterface {
      *            See here: https://medium.com/coinmonks/missing-return-value-bug-at-least-130-tokens-affected-d67bf08521ca
      */
     function doTransferOut(address payable to, uint amount) internal {
+        // Update the internal cash.
+        internalCash = sub_(internalCash, amount);
         EIP20NonStandardInterface token = EIP20NonStandardInterface(underlying);
         token.transfer(to, amount);
 
@@ -227,7 +229,6 @@ contract CErc20 is TToken, CErc20Interface, CCapableDelegateInterface {
                 }
         }
         require(success, "TOKEN_TRANSFER_OUT_FAILED");
-        internalCash = sub_(internalCash, amount);
     }
 
     function validateFlashloanToken(address token) view internal {
