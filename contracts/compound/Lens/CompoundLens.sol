@@ -231,7 +231,7 @@ contract CompoundLens {
         uint farmReward;
         uint stakeApr;
         uint farmApr;
-        uint256 tokenPerSec;
+        uint256 tokenPerBlock;
     }
 
     function getTMLPAPY(TMLPDelegate lp, uint mojitoPrice, uint priceB, uint priceLp) public view returns(uint apyA, uint apyB) {
@@ -256,8 +256,9 @@ contract CompoundLens {
         apyA = add(vars.farmApr, vars.farmApr.mul(vars.stakeApr).div(1e8), "apr err");
 
         if (address(poolInfo.rewarder) != address(0)) {
-            vars.tokenPerSec = poolInfo.rewarder.tokenPerSec();
-            apyB = vars.tokenPerSec.mul(1e8).mul(86400).div(poolInfo.lpToken.balanceOf(address(vars.pool))).mul(priceB).div(priceLp);
+            vars.tokenPerBlock = poolInfo.rewarder.tokenPerBlock();
+            // 3 seconds per block
+            apyB = vars.tokenPerBlock.mul(1e8).mul(28800).div(poolInfo.lpToken.balanceOf(address(vars.pool))).mul(priceB).div(priceLp);
         }
     }
 

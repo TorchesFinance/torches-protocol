@@ -9,5 +9,5 @@ interface IRewarder {
 
     function rewardToken() external view returns (EIP20Interface);
 
-    function tokenPerSec() external view returns(uint256);
+    function tokenPerBlock() external view returns(uint256);
 }
