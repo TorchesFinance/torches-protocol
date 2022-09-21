@@ -343,10 +343,7 @@ contract Comptroller is ComptrollerV3Storage, ComptrollerInterface, ComptrollerE
 
         /* The liquidator may not repay more than what is allowed by the closeFactor */
         uint borrowBalance = CToken(cTokenBorrowed).borrowBalanceStored(borrower);
-        (MathError mathErr, uint maxClose) = mulScalarTruncate(Exp({mantissa: closeFactorMantissa}), borrowBalance);
-        if (mathErr != MathError.NO_ERROR) {
-            return uint(Error.MATH_ERROR);
-        }
+        uint256 maxClose = mul_ScalarTruncate(Exp({mantissa: closeFactorMantissa}), borrowBalance);
         if (repayAmount > maxClose) {
             return uint(Error.TOO_MUCH_REPAY);
         }
@@ -525,28 +522,13 @@ contract Comptroller is ComptrollerV3Storage, ComptrollerInterface, ComptrollerE
         Exp memory numerator;
         Exp memory denominator;
         Exp memory ratio;
-        MathError mathErr;
 
         uint liquidationIncentive = getLiquidationIncentive(cTokenCollateral);
-        (mathErr, numerator) = mulExp(liquidationIncentive, priceBorrowedMantissa);
-        if (mathErr != MathError.NO_ERROR) {
-            return (uint(Error.MATH_ERROR), 0);
-        }
+        numerator = mul_(Exp({mantissa: liquidationIncentive}), Exp({mantissa: priceBorrowedMantissa}));
+        denominator = mul_(Exp({mantissa: priceCollateralMantissa}), Exp({mantissa: exchangeRateMantissa}));
+        ratio = div_(numerator, denominator);
 
-        (mathErr, denominator) = mulExp(priceCollateralMantissa, exchangeRateMantissa);
-        if (mathErr != MathError.NO_ERROR) {
-            return (uint(Error.MATH_ERROR), 0);
-        }
-
-        (mathErr, ratio) = divExp(numerator, denominator);
-        if (mathErr != MathError.NO_ERROR) {
-            return (uint(Error.MATH_ERROR), 0);
-        }
-
-        (mathErr, seizeTokens) = mulScalarTruncate(ratio, actualRepayAmount);
-        if (mathErr != MathError.NO_ERROR) {
-            return (uint(Error.MATH_ERROR), 0);
-        }
+        seizeTokens = mul_ScalarTruncate(ratio, actualRepayAmount);
 
         return (uint(Error.NO_ERROR), seizeTokens);
     }

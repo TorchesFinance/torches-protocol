@@ -97,6 +97,26 @@ contract Exponential is CarefulMath {
     }
 
     /**
+     * @dev Multiply an Exp by a scalar, then truncate to return an unsigned integer.
+     */
+    function mul_ScalarTruncate(Exp memory a, uint256 scalar) internal pure returns (uint256) {
+        Exp memory product = mul_(a, scalar);
+        return truncate(product);
+    }
+
+    /**
+     * @dev Multiply an Exp by a scalar, truncate, then add an to an unsigned integer, returning an unsigned integer.
+     */
+    function mul_ScalarTruncateAddUInt(
+        Exp memory a,
+        uint256 scalar,
+        uint256 addend
+    ) internal pure returns (uint256) {
+        Exp memory product = mul_(a, scalar);
+        return add_(truncate(product), addend);
+    }
+
+    /**
      * @dev Divide an Exp by a scalar, returning a new Exp.
      */
     function divScalar(Exp memory a, uint scalar) pure internal returns (MathError, Exp memory) {
@@ -129,6 +149,23 @@ contract Exponential is CarefulMath {
     }
 
     /**
+     * @dev Divide a scalar by an Exp, returning a new Exp.
+     */
+    function div_ScalarByExp(uint256 scalar, Exp memory divisor) internal pure returns (Exp memory) {
+        /*
+          We are doing this as:
+          getExp(mulUInt(expScale, scalar), divisor.mantissa)
+
+          How it works:
+          Exp = a / b;
+          Scalar = s;
+          `s / (a / b)` = `b * s / a` and since for an Exp `a = mantissa, b = expScale`
+        */
+        uint256 numerator = mul_(expScale, scalar);
+        return Exp({mantissa: div_(numerator, divisor)});
+    }
+
+    /**
      * @dev Divide a scalar by an Exp, then truncate to return an unsigned integer.
      */
     function divScalarByExpTruncate(uint scalar, Exp memory divisor) pure internal returns (MathError, uint) {
@@ -138,6 +175,14 @@ contract Exponential is CarefulMath {
         }
 
         return (MathError.NO_ERROR, truncate(fraction));
+    }
+
+    /**
+     * @dev Divide a scalar by an Exp, then truncate to return an unsigned integer.
+     */
+    function div_ScalarByExpTruncate(uint256 scalar, Exp memory divisor) internal pure returns (uint256) {
+        Exp memory fraction = div_ScalarByExp(scalar, divisor);
+        return truncate(fraction);
     }
 
     /**

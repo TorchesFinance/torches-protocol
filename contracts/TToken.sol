@@ -62,7 +62,6 @@ contract TToken is CToken {
         }
 
         LiquidationLocalVars memory vars;
-        MathError mathErr;
 
         TorchesConfig torchesConfig = Torchestroller(address(comptroller)).torchesConfig();
         uint liquidationIncentive = comptroller.getLiquidationIncentive(seizerToken);
@@ -73,20 +72,11 @@ contract TToken is CToken {
          *  borrowerTokensNew = accountTokens[borrower] - seizeTokens
          *  liquidatorTokensNew = accountTokens[liquidator] + seizeTokens
          */
-        (mathErr, vars.borrowerTokensNew) = subUInt(accountTokens[borrower], seizeTokens);
-        if (mathErr != MathError.NO_ERROR) {
-            return failOpaque(Error.MATH_ERROR, FailureInfo.LIQUIDATE_SEIZE_BALANCE_DECREMENT_FAILED, uint(mathErr));
-        }
+        vars.borrowerTokensNew = sub_(accountTokens[borrower], seizeTokens);
 
-        (mathErr, vars.liquidatorTokensNew) = addUInt(accountTokens[liquidator], vars.liquidatorSeizeTokens);
-        if (mathErr != MathError.NO_ERROR) {
-            return failOpaque(Error.MATH_ERROR, FailureInfo.LIQUIDATE_SEIZE_BALANCE_INCREMENT_FAILED, uint(mathErr));
-        }
+        vars.liquidatorTokensNew = add_(accountTokens[liquidator], vars.liquidatorSeizeTokens);
 
-        (mathErr, vars.safetyVaultTokensNew) = addUInt(accountTokens[safetyVault], vars.safetyVaultTokens);
-        if (mathErr != MathError.NO_ERROR) {
-            return failOpaque(Error.MATH_ERROR, FailureInfo.LIQUIDATE_SEIZE_BALANCE_INCREMENT_FAILED, uint(mathErr));
-        }
+        vars.safetyVaultTokensNew = add_(accountTokens[safetyVault], vars.safetyVaultTokens);
 
         /////////////////////////
         // EFFECTS & INTERACTIONS
@@ -258,13 +248,13 @@ contract TToken is CToken {
      * @param data Arbitrary data structure, intended to contain user-defined parameters.
      */
     function flashLoan(IERC3156FlashBorrower receiver, address token, uint256 amount, bytes calldata data) external returns (bool) {
-        require(accrueInterest() == uint(Error.NO_ERROR), "Accrue interest failed");
+        accrueInterest();
         validateFlashloanToken(token);
-        
+
         Torchestroller(address(comptroller)).flashLoanAllowed(address(this), address(receiver), amount);
 
         uint cashBefore = getCashPrior();
-        require(cashBefore >= amount, "Insufficient liquidity");
+        require(cashBefore >= amount, "insufficient cash");
         // 1. calculate fee
         uint fee = getFlashFeeInternal(token, amount);
         // 2. update totalBorrows

@@ -21,7 +21,7 @@ contract Torchestroller is Comptroller {
     function _setCompSpeeds(address[] memory _allMarkets, uint[] memory _compSpeeds) public {
         // Check caller is admin
         require(msg.sender == admin);
-        
+
         require(_allMarkets.length == _compSpeeds.length);
 
         for (uint i = 0; i < _allMarkets.length; i++) {
@@ -111,8 +111,7 @@ contract Torchestroller is Comptroller {
         // Borrow cap of 0 corresponds to unlimited borrowing
         if (borrowCap != 0) {
             uint totalBorrows = CToken(cToken).totalBorrows();
-            (MathError mathErr, uint nextTotalBorrows) = addUInt(totalBorrows, borrowAmount);
-            require(mathErr == MathError.NO_ERROR, "overflow");
+            uint nextTotalBorrows = add_(totalBorrows, borrowAmount);
             require(nextTotalBorrows < borrowCap, "!cap");
         }
 
@@ -174,10 +173,8 @@ contract Torchestroller is Comptroller {
         // Supply cap of 0 corresponds to unlimited borrowing
         if (supplyCap != 0) {
             Exp memory exchangeRate = Exp({mantissa: CTokenInterface(cToken).exchangeRateStored()});
-            (MathError mErr, uint totalSupplyUnderlying) = mulScalarTruncate(exchangeRate, EIP20Interface(cToken).totalSupply());
-            require(mErr == MathError.NO_ERROR);
-            (MathError mathErr, uint nextTotalSupplyUnderlying) = addUInt(totalSupplyUnderlying, mintAmount);
-            require(mathErr == MathError.NO_ERROR);
+            uint totalSupplyUnderlying = mul_ScalarTruncate(exchangeRate, EIP20Interface(cToken).totalSupply());
+            uint nextTotalSupplyUnderlying = add_(totalSupplyUnderlying, mintAmount);
             require(nextTotalSupplyUnderlying <= supplyCap, ">cap");
         }
 
@@ -261,7 +258,6 @@ contract Torchestroller is Comptroller {
 
         AccountLiquidityLocalVars memory vars; // Holds all our calculation results
         uint oErr;
-        MathError mErr;
 
         // For each asset the account is in
         CToken[] memory assets = accountAssets[account];
@@ -285,42 +281,28 @@ contract Torchestroller is Comptroller {
             vars.oraclePrice = Exp({mantissa: vars.oraclePriceMantissa});
 
             // Pre-compute a conversion factor from tokens -> ether (normalized price value)
-            (mErr, vars.tokensToDenom) = mulExp3(vars.collateralFactor, vars.exchangeRate, vars.oraclePrice);
-            if (mErr != MathError.NO_ERROR) {
-                return (Error.MATH_ERROR, 0, 0);
-            }
+            vars.tokensToDenom = mul_(mul_(vars.collateralFactor, vars.exchangeRate), vars.oraclePrice);
 
             // sumCollateral += tokensToDenom * cTokenBalance
-            (mErr, vars.sumCollateral) = mulScalarTruncateAddUInt(vars.tokensToDenom, vars.cTokenBalance, vars.sumCollateral);
-            if (mErr != MathError.NO_ERROR) {
-                return (Error.MATH_ERROR, 0, 0);
-            }
+            vars.sumCollateral = mul_ScalarTruncateAddUInt(vars.tokensToDenom, vars.cTokenBalance, vars.sumCollateral);
 
             // borrowValue = borrowBalance / borrowFactor
             uint borrowValue = div_(vars.borrowBalance, vars.borrowFactorMantissa);
             // sumBorrowPlusEffects += oraclePrice * borrowValue
-            (mErr, vars.sumBorrowPlusEffects) = mulScalarTruncateAddUInt(vars.oraclePrice, borrowValue, vars.sumBorrowPlusEffects);
-            if (mErr != MathError.NO_ERROR) {
-                return (Error.MATH_ERROR, 0, 0);
-            }
+            vars.sumBorrowPlusEffects = mul_ScalarTruncateAddUInt(vars.oraclePrice, borrowValue, vars.sumBorrowPlusEffects);
+
 
             // Calculate effects of interacting with cTokenModify
             if (asset == cTokenModify) {
                 // redeem effect
                 // sumBorrowPlusEffects += tokensToDenom * redeemTokens
-                (mErr, vars.sumBorrowPlusEffects) = mulScalarTruncateAddUInt(vars.tokensToDenom, redeemTokens, vars.sumBorrowPlusEffects);
-                if (mErr != MathError.NO_ERROR) {
-                    return (Error.MATH_ERROR, 0, 0);
-                }
+                vars.sumBorrowPlusEffects = mul_ScalarTruncateAddUInt(vars.tokensToDenom, redeemTokens, vars.sumBorrowPlusEffects);
 
                 // borrow effect
                 // borrowValue = borrowAmount / borrowFactor
                 borrowValue = div_(borrowAmount, vars.borrowFactorMantissa);
                 // sumBorrowPlusEffects += oraclePrice * borrowValue
-                (mErr, vars.sumBorrowPlusEffects) = mulScalarTruncateAddUInt(vars.oraclePrice, borrowValue, vars.sumBorrowPlusEffects);
-                if (mErr != MathError.NO_ERROR) {
-                    return (Error.MATH_ERROR, 0, 0);
-                }
+                vars.sumBorrowPlusEffects = mul_ScalarTruncateAddUInt(vars.oraclePrice, borrowValue, vars.sumBorrowPlusEffects);
             }
         }
 
