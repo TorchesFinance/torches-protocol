@@ -86,7 +86,6 @@ contract CToken is CTokenInterface, Exponential, TokenErrorReporter {
         }
 
         /* Do the calculations, checking for {under,over}flow */
-        MathError mathErr;
         uint allowanceNew;
         uint srcTokensNew;
         uint dstTokensNew;
@@ -191,17 +190,8 @@ contract CToken is CTokenInterface, Exponential, TokenErrorReporter {
         uint borrowBalance;
         uint exchangeRateMantissa;
 
-        MathError mErr;
-
-        (mErr, borrowBalance) = borrowBalanceStoredInternal(account);
-        if (mErr != MathError.NO_ERROR) {
-            return (uint(Error.MATH_ERROR), 0, 0, 0);
-        }
-
-        (mErr, exchangeRateMantissa) = exchangeRateStoredInternal();
-        if (mErr != MathError.NO_ERROR) {
-            return (uint(Error.MATH_ERROR), 0, 0, 0);
-        }
+        borrowBalance = borrowBalanceStoredInternal(account);
+        exchangeRateMantissa = exchangeRateStoredInternal();
 
         return (uint(Error.NO_ERROR), cTokenBalance, borrowBalance, exchangeRateMantissa);
     }
@@ -255,9 +245,7 @@ contract CToken is CTokenInterface, Exponential, TokenErrorReporter {
      * @return The calculated balance
      */
     function borrowBalanceStored(address account) public view returns (uint) {
-        (MathError err, uint result) = borrowBalanceStoredInternal(account);
-        require(err == MathError.NO_ERROR, "!store");
-        return result;
+        return borrowBalanceStoredInternal(account);
     }
 
     /**
@@ -265,7 +253,7 @@ contract CToken is CTokenInterface, Exponential, TokenErrorReporter {
      * @param account The address whose balance should be calculated
      * @return (error code, the calculated balance or 0 if error code is non-zero)
      */
-    function borrowBalanceStoredInternal(address account) internal view returns (MathError, uint) {
+    function borrowBalanceStoredInternal(address account) internal view returns (uint) {
         /* Note: we do not assert that the market is up to date */
         uint principalTimesIndex;
         uint result;
@@ -277,7 +265,7 @@ contract CToken is CTokenInterface, Exponential, TokenErrorReporter {
          * Rather than failing the calculation with a division by 0, we immediately return 0 in this case.
          */
         if (borrowSnapshot.principal == 0) {
-            return (MathError.NO_ERROR, 0);
+            return 0;
         }
 
         /* Calculate new borrow balance using the interest index:
@@ -286,7 +274,7 @@ contract CToken is CTokenInterface, Exponential, TokenErrorReporter {
         principalTimesIndex = mul_(borrowSnapshot.principal, borrowIndex);
         result = div_(principalTimesIndex, borrowSnapshot.interestIndex);
 
-        return (MathError.NO_ERROR, result);
+        return result;
     }
 
     /**
@@ -304,9 +292,7 @@ contract CToken is CTokenInterface, Exponential, TokenErrorReporter {
      * @return Calculated exchange rate scaled by 1e18
      */
     function exchangeRateStored() public view returns (uint) {
-        (MathError err, uint result) = exchangeRateStoredInternal();
-        require(err == MathError.NO_ERROR);
-        return result;
+        return exchangeRateStoredInternal();
     }
 
     /**
@@ -314,14 +300,14 @@ contract CToken is CTokenInterface, Exponential, TokenErrorReporter {
      * @dev This function does not accrue interest before calculating the exchange rate
      * @return (error code, calculated exchange rate scaled by 1e18)
      */
-    function exchangeRateStoredInternal() internal view returns (MathError, uint) {
+    function exchangeRateStoredInternal() internal view returns (uint) {
         uint _totalSupply = totalSupply;
         if (_totalSupply == 0) {
             /*
              * If there are no tokens minted:
              *  exchangeRate = initialExchangeRate
              */
-            return (MathError.NO_ERROR, initialExchangeRateMantissa);
+            return initialExchangeRateMantissa;
         } else {
             /*
              * Otherwise:
@@ -332,7 +318,7 @@ contract CToken is CTokenInterface, Exponential, TokenErrorReporter {
 
             uint256 exchangeRate = div_(cashPlusBorrowsMinusReserves, Exp({mantissa: _totalSupply}));
 
-            return (MathError.NO_ERROR, exchangeRate);
+            return exchangeRate;
         }
     }
 
@@ -449,10 +435,7 @@ contract CToken is CTokenInterface, Exponential, TokenErrorReporter {
 
         MintLocalVars memory vars;
 
-        (vars.mathErr, vars.exchangeRateMantissa) = exchangeRateStoredInternal();
-        if (vars.mathErr != MathError.NO_ERROR) {
-            return (failOpaque(Error.MATH_ERROR, FailureInfo.MINT_EXCHANGE_RATE_READ_FAILED, uint(vars.mathErr)), 0);
-        }
+        vars.exchangeRateMantissa = exchangeRateStoredInternal();
 
         /////////////////////////
         // EFFECTS & INTERACTIONS
@@ -539,10 +522,7 @@ contract CToken is CTokenInterface, Exponential, TokenErrorReporter {
         RedeemLocalVars memory vars;
 
         /* exchangeRate = invoke Exchange Rate Stored() */
-        (vars.mathErr, vars.exchangeRateMantissa) = exchangeRateStoredInternal();
-        if (vars.mathErr != MathError.NO_ERROR) {
-            return failOpaque(Error.MATH_ERROR, FailureInfo.REDEEM_EXCHANGE_RATE_READ_FAILED, uint(vars.mathErr));
-        }
+        vars.exchangeRateMantissa = exchangeRateStoredInternal();
 
         /* If redeemTokensIn > 0: */
         if (redeemTokensIn > 0) {
@@ -664,11 +644,7 @@ contract CToken is CTokenInterface, Exponential, TokenErrorReporter {
          *  accountBorrowsNew = accountBorrows + borrowAmount
          *  totalBorrowsNew = totalBorrows + borrowAmount
          */
-        (vars.mathErr, vars.accountBorrows) = borrowBalanceStoredInternal(borrower);
-        if (vars.mathErr != MathError.NO_ERROR) {
-            return failOpaque(Error.MATH_ERROR, FailureInfo.BORROW_ACCUMULATED_BALANCE_CALCULATION_FAILED, uint(vars.mathErr));
-        }
-
+        vars.accountBorrows = borrowBalanceStoredInternal(borrower);
         vars.accountBorrowsNew = add_(vars.accountBorrows, borrowAmount);
         vars.totalBorrowsNew = add_(totalBorrows, borrowAmount);
 
@@ -754,10 +730,7 @@ contract CToken is CTokenInterface, Exponential, TokenErrorReporter {
         vars.borrowerIndex = accountBorrows[borrower].interestIndex;
 
         /* We fetch the amount the borrower owes, with accumulated interest */
-        (vars.mathErr, vars.accountBorrows) = borrowBalanceStoredInternal(borrower);
-        if (vars.mathErr != MathError.NO_ERROR) {
-            return (failOpaque(Error.MATH_ERROR, FailureInfo.REPAY_BORROW_ACCUMULATED_BALANCE_CALCULATION_FAILED, uint(vars.mathErr)), 0);
-        }
+        vars.accountBorrows = borrowBalanceStoredInternal(borrower);
 
         /* If repayAmount == -1, repayAmount = accountBorrows */
         if (repayAmount == uint(-1)) {
