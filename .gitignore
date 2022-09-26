@@ -41,5 +41,9 @@ junit.xml
 .last_confs
 .saddle_history
 .secret
-scripts/
 flats/
+yarn.lock
+abi
+tool
+artifacts
+cache
