@@ -223,19 +223,20 @@ contract CompoundLens {
         }
     }
 
-    struct TMLPAPYParam {
+    struct TMLPDIRParam {
         MasterChefV2 pool;
         uint reward;
         uint totalAllocPoint;
         uint stakeReward;
         uint farmReward;
-        uint stakeApr;
-        uint farmApr;
+        uint stakeDir;
+        uint farmDir;
         uint256 tokenPerBlock;
     }
 
-    function getTMLPAPY(TMLPDelegate lp, uint mojitoPrice, uint priceB, uint priceLp) public view returns(uint apyA, uint apyB) {
-        TMLPAPYParam memory vars;
+    // DIR for Daily Interest Rate
+    function getTMLPDIR(TMLPDelegate lp, uint mojitoPrice, uint priceB, uint priceLp) public view returns(uint dirA, uint dirB) {
+        TMLPDIRParam memory vars;
 
         vars.pool = lp.mojitoPool();
         // reward per block
@@ -250,15 +251,15 @@ contract CompoundLens {
         vars.stakeReward = vars.reward.mul(stakeInfo.allocPoint).div(vars.totalAllocPoint);
         vars.farmReward = vars.reward.mul(poolInfo.allocPoint).div(vars.totalAllocPoint);
 
-        vars.stakeApr = vars.stakeReward.mul(1e8).mul(28800).div(stakeInfo.lpToken.balanceOf(address(vars.pool)));
-        vars.farmApr = vars.farmReward.mul(1e8).mul(28800).div(poolInfo.lpToken.balanceOf(address(vars.pool))).mul(mojitoPrice).div(priceLp);
+        vars.stakeDir = vars.stakeReward.mul(1e8).mul(28800).div(stakeInfo.lpToken.balanceOf(address(vars.pool)));
+        vars.farmDir = vars.farmReward.mul(1e8).mul(28800).div(poolInfo.lpToken.balanceOf(address(vars.pool))).mul(mojitoPrice).div(priceLp);
 
-        apyA = add(vars.farmApr, vars.farmApr.mul(vars.stakeApr).div(1e8), "apr err");
+        dirA = add(vars.farmDir, vars.farmDir.mul(vars.stakeDir).div(1e8), "dir err");
 
         if (address(poolInfo.rewarder) != address(0)) {
             vars.tokenPerBlock = poolInfo.rewarder.tokenPerBlock();
             // 3 seconds per block
-            apyB = vars.tokenPerBlock.mul(1e8).mul(28800).div(poolInfo.lpToken.balanceOf(address(vars.pool))).mul(priceB).div(priceLp);
+            dirB = vars.tokenPerBlock.mul(1e8).mul(28800).div(poolInfo.lpToken.balanceOf(address(vars.pool))).mul(priceB).div(priceLp);
         }
     }
 
