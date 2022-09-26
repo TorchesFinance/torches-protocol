@@ -9,7 +9,7 @@ import "./IWETH.sol";
  * @notice CTokens which wrap an EIP-20 underlying
  * @author Compound
  */
-contract CWrappedNative is TToken, CErc20Storage {
+contract CWrappedNative is TToken, CErc20Storage, CCapableDelegateInterface {
     /**
      * @notice Initialize the new money market
      * @param underlying_ The address of the underlying asset
@@ -118,6 +118,26 @@ contract CWrappedNative is TToken, CErc20Storage {
     }
 
     /**
+     * @notice Absorb excess cash into reserves.
+     */
+    function gulp() external nonReentrant {
+        uint256 cashOnChain = getCashOnChain();
+        uint256 cashPrior = getCashPrior();
+        uint256 excessCash = sub_(cashOnChain, cashPrior);
+        uint256 totalReservesNew = add_(totalReserves, excessCash);
+
+        uint256 balance = address(this).balance;
+        if (balance > 0) {
+            IWETH(underlying).deposit.value(balance)();
+            totalReserves = add_(totalReservesNew, balance);
+            internalCash = add_(cashOnChain,balance);
+        } else {
+            totalReserves = totalReservesNew;
+            internalCash = cashOnChain;
+        }
+    }
+
+    /**
      * @notice The sender adds to reserves.
      * @dev Accrues interest whether or not the operation succeeds, unless reverted
      *  Keep return in the function signature for consistency
@@ -135,6 +155,15 @@ contract CWrappedNative is TToken, CErc20Storage {
      * @return The quantity of underlying tokens owned by this contract
      */
     function getCashPrior() internal view returns (uint) {
+        return internalCash;
+    }
+
+    /**
+     * @notice Gets total balance of this contract in terms of the underlying
+     * @dev This excludes the value of the current message, if any
+     * @return The quantity of underlying tokens owned by this contract
+     */
+    function getCashOnChain() internal view returns (uint256) {
         EIP20Interface token = EIP20Interface(underlying);
         return token.balanceOf(address(this));
     }
@@ -150,11 +179,17 @@ contract CWrappedNative is TToken, CErc20Storage {
         require(msg.sender == from);
         require(msg.value == amount, "value mismatch");
         IWETH nativeWrapper = IWETH(underlying);
+        uint balanceBefore = nativeWrapper.balanceOf(address(this));
         nativeWrapper.deposit.value(amount)();
-        return amount;
+        uint balanceAfter = nativeWrapper.balanceOf(address(this));
+        uint256 transferredIn = sub_(balanceAfter, balanceBefore);
+        internalCash = add_(internalCash, transferredIn);
+        return transferredIn;
     }
 
     function doTransferOut(address payable to, uint amount) internal {
+        // Update the internal cash.
+        internalCash = sub_(internalCash, amount);
         /* Send the Ether, with minimal gas and revert on failure */
         IWETH nativeWrapper = IWETH(underlying);
         nativeWrapper.withdraw(amount);

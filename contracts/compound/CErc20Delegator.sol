@@ -329,6 +329,14 @@ contract CErc20Delegator is CTokenInterface, CErc20Interface, CDelegatorInterfac
         delegateToImplementation(abi.encodeWithSignature("sweepToken(address)", token));
     }
 
+    /**
+     * @notice Gulps excess contract cash to reserves
+     * @dev This function calculates excess ERC20 gained from a ERC20.transfer() call and adds the excess to reserves.
+     */
+    function gulp() external {
+        delegateToImplementation(abi.encodeWithSignature("gulp()"));
+    }
+
     /*** Admin Functions ***/
 
     /**
