@@ -251,15 +251,15 @@ contract CompoundLens {
         vars.stakeReward = vars.reward.mul(stakeInfo.allocPoint).div(vars.totalAllocPoint);
         vars.farmReward = vars.reward.mul(poolInfo.allocPoint).div(vars.totalAllocPoint);
 
-        vars.stakeDir = vars.stakeReward.mul(1e8).mul(28800).div(stakeInfo.lpToken.balanceOf(address(vars.pool)));
-        vars.farmDir = vars.farmReward.mul(1e8).mul(28800).div(poolInfo.lpToken.balanceOf(address(vars.pool))).mul(mojitoPrice).div(priceLp);
+        vars.stakeDir = vars.stakeReward.mul(1e18).mul(28800).div(stakeInfo.lpToken.balanceOf(address(vars.pool)));
+        vars.farmDir = vars.farmReward.mul(1e18).mul(28800).div(poolInfo.lpToken.balanceOf(address(vars.pool))).mul(mojitoPrice).div(priceLp);
 
-        dirA = add(vars.farmDir, vars.farmDir.mul(vars.stakeDir).div(1e8), "dir err");
+        dirA = add(vars.farmDir, vars.farmDir.mul(vars.stakeDir).div(1e18), "dir err");
 
         if (address(poolInfo.rewarder) != address(0)) {
             vars.tokenPerBlock = poolInfo.rewarder.tokenPerBlock();
             // 3 seconds per block
-            dirB = vars.tokenPerBlock.mul(1e8).mul(28800).div(poolInfo.lpToken.balanceOf(address(vars.pool))).mul(priceB).div(priceLp);
+            dirB = vars.tokenPerBlock.mul(1e18).mul(28800).div(poolInfo.lpToken.balanceOf(address(vars.pool))).mul(priceB).div(priceLp);
         }
     }
 
