@@ -11,11 +11,11 @@
   ],
   "scripts": {
     "genabi": "truffle compile && truffle-abi -d build/contracts/ -o abi",
-    "size": "truffle run contract-size",
+    "tsize": "truffle run contract-size",
     "tc": "truffle compile",
     "hc": "hardhat compile",
     "clean": "hardhat clean && rm -rf build/ cache/ coverage* dist/",
-    "size-contracts": "hardhat size-contracts",
+    "size": "hardhat size-contracts",
     "storage-output": "hardhat run scripts/storage_export.ts",
     "storage": "hardhat check",
     "test": "hardhat test",
