@@ -9,7 +9,8 @@ contract Torchestroller is Comptroller {
     TorchesConfig public torchesConfig;
 
     function _setTorchesConfig(TorchesConfig _torchesConfig) public {
-        require(msg.sender == admin);
+        // Check caller is admin
+        ensureAdmin();
 
         torchesConfig = _torchesConfig;
     }
@@ -20,7 +21,7 @@ contract Torchestroller is Comptroller {
      */
     function _setCompSpeeds(address[] memory _allMarkets, uint[] memory _compSpeeds) public {
         // Check caller is admin
-        require(msg.sender == admin);
+        ensureAdmin();
 
         require(_allMarkets.length == _compSpeeds.length);
 
@@ -48,17 +49,18 @@ contract Torchestroller is Comptroller {
             updateCompBorrowIndex(_cToken, borrowIndex);
         }
         compSpeeds[_cToken] = _compSpeed;
+        emit CompSpeedUpdated(CToken(_cToken), _compSpeed);
     }
 
 
     function getCompAddress() public view returns (address) {
         return torchesConfig.compToken();
     }
-    
+
     function calculateSeizeTokenAllocation(uint _seizeTokenAmount) public view returns(uint liquidatorAmount, uint safetyVaultAmount) {
         return torchesConfig.calculateSeizeTokenAllocation(_seizeTokenAmount, liquidationIncentiveMantissa);
     }
-    
+
     function transferComp(address user, uint userAccrued, uint threshold) internal returns (uint) {
         address compAddress = getCompAddress();
         if (userAccrued >= threshold && userAccrued > 0 && compAddress != address(0x0)) {
@@ -85,9 +87,10 @@ contract Torchestroller is Comptroller {
         // Pausing is a very serious situation - we revert to sound the alarms
         require(!borrowGuardianPaused[cToken], "paused");
 
-        if (!markets[cToken].isListed) {
-            return uint(Error.MARKET_NOT_LISTED);
-        }
+        ensureListed(markets[cToken]);
+//        if (!markets[cToken].isListed) {
+//            return uint(Error.MARKET_NOT_LISTED);
+//        }
 
         if (!markets[cToken].accountMembership[borrower]) {
             // only cTokens may call borrowAllowed if borrower not in market
@@ -136,9 +139,10 @@ contract Torchestroller is Comptroller {
         require(!borrowGuardianPaused[cToken], "paused");
         require(torchesConfig.whitelist(to), "!whitelist");
 
-        if (!markets[cToken].isListed) {
-            return uint(Error.MARKET_NOT_LISTED);
-        }
+        ensureListed(markets[cToken]);
+//        if (!markets[cToken].isListed) {
+//            return uint(Error.MARKET_NOT_LISTED);
+//        }
 
         uint flashLoanCap = torchesConfig.getFlashLoanCap(cToken);
         require(flashLoanAmount <= flashLoanCap, "cap reached");
@@ -164,9 +168,7 @@ contract Torchestroller is Comptroller {
         // Pausing is a very serious situation - we revert to sound the alarms
         require(!mintGuardianPaused[cToken]);
 
-        if (!markets[cToken].isListed) {
-            return uint(Error.MARKET_NOT_LISTED);
-        }
+        ensureListed(markets[cToken]);
 
         uint supplyCap = torchesConfig.getSupplyCap(cToken);
 
@@ -368,13 +370,13 @@ contract Torchestroller is Comptroller {
     }
 
     function _supportMarket(CToken cToken) external returns (uint) {
-        if (msg.sender != admin) {
-            return fail(Error.UNAUTHORIZED, FailureInfo.SUPPORT_MARKET_OWNER_CHECK);
-        }
+        // Check caller is admin
+        ensureAdmin();
 
-        if (markets[address(cToken)].isListed) {
-            return fail(Error.MARKET_ALREADY_LISTED, FailureInfo.SUPPORT_MARKET_EXISTS);
-        }
+        ensureListed(markets[address(cToken)]);
+//        if (markets[address(cToken)].isListed) {
+//            return fail(Error.MARKET_ALREADY_LISTED, FailureInfo.SUPPORT_MARKET_EXISTS);
+//        }
 
         cToken.isCToken(); // Sanity check to make sure its really a CToken
 
@@ -394,9 +396,7 @@ contract Torchestroller is Comptroller {
       */
     function _setPriceOracle(PriceOracle newOracle) external returns (uint) {
         // Check caller is admin
-        if (msg.sender != admin) {
-            return fail(Error.UNAUTHORIZED, FailureInfo.SET_PRICE_ORACLE_OWNER_CHECK);
-        }
+        ensureAdmin();
 
         // Emit NewPriceOracle(oldOracle, newOracle)
         emit NewPriceOracle(oracle, newOracle);

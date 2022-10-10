@@ -87,6 +87,24 @@ contract Comptroller is ComptrollerV3Storage, ComptrollerInterface, ComptrollerE
         admin = msg.sender;
     }
 
+    /// @notice Reverts if the caller is not admin
+    function ensureAdmin() internal view {
+        require(msg.sender == admin, "only admin can");
+    }
+
+    /// @notice Reverts if the caller is neither admin nor the passed address
+    function ensureAdminOr(address privilegedAddress) private view {
+        require(
+            msg.sender == admin || msg.sender == privilegedAddress,
+            "access denied"
+        );
+    }
+
+    /// @notice Reverts if the market is not listed
+    function ensureListed(Market storage market) internal view {
+        require(market.isListed, "market not listed");
+    }
+
     /*** Assets You Are In ***/
 
     /**
@@ -137,10 +155,7 @@ contract Comptroller is ComptrollerV3Storage, ComptrollerInterface, ComptrollerE
     function addToMarketInternal(CToken cToken, address borrower) internal returns (Error) {
         Market storage marketToJoin = markets[address(cToken)];
 
-        if (!marketToJoin.isListed) {
-            // market is not listed, cannot join
-            return Error.MARKET_NOT_LISTED;
-        }
+        ensureListed(marketToJoin);
 
         if (marketToJoin.accountMembership[borrower] == true) {
             // already joined
@@ -242,9 +257,7 @@ contract Comptroller is ComptrollerV3Storage, ComptrollerInterface, ComptrollerE
     }
 
     function redeemAllowedInternal(address cToken, address redeemer, uint redeemTokens) internal view returns (uint) {
-        if (!markets[cToken].isListed) {
-            return uint(Error.MARKET_NOT_LISTED);
-        }
+        ensureListed(markets[cToken]);
 
         /* If the redeemer is not 'in' the market, then we can bypass the liquidity check */
         if (!markets[cToken].accountMembership[redeemer]) {
@@ -299,9 +312,7 @@ contract Comptroller is ComptrollerV3Storage, ComptrollerInterface, ComptrollerE
         borrower;
         repayAmount;
 
-        if (!markets[cToken].isListed) {
-            return uint(Error.MARKET_NOT_LISTED);
-        }
+        ensureListed(markets[cToken]);
 
         // Keep the flywheel moving
         Exp memory borrowIndex = Exp({mantissa: CToken(cToken).borrowIndex()});
@@ -328,9 +339,11 @@ contract Comptroller is ComptrollerV3Storage, ComptrollerInterface, ComptrollerE
         // Shh - currently unused
         liquidator;
 
-        if (!markets[cTokenBorrowed].isListed || !markets[cTokenCollateral].isListed) {
-            return uint(Error.MARKET_NOT_LISTED);
-        }
+        ensureListed(markets[cTokenBorrowed]);
+        ensureListed(markets[cTokenCollateral]);
+//        if (!markets[cTokenBorrowed].isListed || !markets[cTokenCollateral].isListed) {
+//            return uint(Error.MARKET_NOT_LISTED);
+//        }
 
         /* The borrower must have shortfall in order to be liquidatable */
         (Error err, , uint shortfall) = getAccountLiquidityInternal(borrower);
@@ -371,9 +384,11 @@ contract Comptroller is ComptrollerV3Storage, ComptrollerInterface, ComptrollerE
         // Shh - currently unused
         seizeTokens;
 
-        if (!markets[cTokenCollateral].isListed || !markets[cTokenBorrowed].isListed) {
-            return uint(Error.MARKET_NOT_LISTED);
-        }
+        ensureListed(markets[cTokenCollateral]);
+        ensureListed(markets[cTokenBorrowed]);
+//        if (!markets[cTokenCollateral].isListed || !markets[cTokenBorrowed].isListed) {
+//            return uint(Error.MARKET_NOT_LISTED);
+//        }
 
         if (CToken(cTokenCollateral).comptroller() != CToken(cTokenBorrowed).comptroller()) {
             return uint(Error.COMPTROLLER_MISMATCH);
@@ -555,9 +570,7 @@ contract Comptroller is ComptrollerV3Storage, ComptrollerInterface, ComptrollerE
       */
     function _setCloseFactor(uint newCloseFactorMantissa) external returns (uint) {
         // Check caller is admin
-        if (msg.sender != admin) {
-            return fail(Error.UNAUTHORIZED, FailureInfo.SET_CLOSE_FACTOR_OWNER_CHECK);
-        }
+        ensureAdmin();
 
         Exp memory newCloseFactorExp = Exp({mantissa: newCloseFactorMantissa});
         Exp memory lowLimit = Exp({mantissa: closeFactorMinMantissa});
@@ -585,15 +598,14 @@ contract Comptroller is ComptrollerV3Storage, ComptrollerInterface, ComptrollerE
       */
     function _setCollateralFactor(CToken cToken, uint newCollateralFactorMantissa) external returns (uint) {
         // Check caller is admin
-        if (msg.sender != admin) {
-            return fail(Error.UNAUTHORIZED, FailureInfo.SET_COLLATERAL_FACTOR_OWNER_CHECK);
-        }
+        ensureAdmin();
 
         // Verify market is listed
         Market storage market = markets[address(cToken)];
-        if (!market.isListed) {
-            return fail(Error.MARKET_NOT_LISTED, FailureInfo.SET_COLLATERAL_FACTOR_NO_EXISTS);
-        }
+        ensureListed(market);
+//        if (!market.isListed) {
+//            return fail(Error.MARKET_NOT_LISTED, FailureInfo.SET_COLLATERAL_FACTOR_NO_EXISTS);
+//        }
 
         Exp memory newCollateralFactorExp = Exp({mantissa: newCollateralFactorMantissa});
 
@@ -617,15 +629,14 @@ contract Comptroller is ComptrollerV3Storage, ComptrollerInterface, ComptrollerE
 
     function _setLiquidationIncentive(CToken cToken, uint newLiquidationIncentiveMantissa) external returns (uint) {
         // Check caller is admin
-        if (msg.sender != admin) {
-            return fail(Error.UNAUTHORIZED, FailureInfo.SET_LIQUIDATION_INCENTIVE_OWNER_CHECK);
-        }
+        ensureAdmin();
 
         // Verify market is listed
         Market storage market = markets[address(cToken)];
-        if (!market.isListed) {
-            return fail(Error.MARKET_NOT_LISTED, FailureInfo.SET_COLLATERAL_FACTOR_NO_EXISTS);
-        }
+        ensureListed(market);
+//        if (!market.isListed) {
+//            return fail(Error.MARKET_NOT_LISTED, FailureInfo.SET_COLLATERAL_FACTOR_NO_EXISTS);
+//        }
 
         // Check de-scaled min <= newLiquidationIncentive <= max
         Exp memory newLiquidationIncentive = Exp({mantissa: newLiquidationIncentiveMantissa});
@@ -656,9 +667,7 @@ contract Comptroller is ComptrollerV3Storage, ComptrollerInterface, ComptrollerE
       */
     function _setLiquidationIncentive(uint newLiquidationIncentiveMantissa) external returns (uint) {
         // Check caller is admin
-        if (msg.sender != admin) {
-            return fail(Error.UNAUTHORIZED, FailureInfo.SET_LIQUIDATION_INCENTIVE_OWNER_CHECK);
-        }
+        ensureAdmin();
 
         // Set liquidation incentive to new incentive
         liquidationIncentiveMantissa = newLiquidationIncentiveMantissa;
@@ -688,7 +697,7 @@ contract Comptroller is ComptrollerV3Storage, ComptrollerInterface, ComptrollerE
      * @param newBorrowFactor The new borrow factor values in underlying to be set. Must be between (0, 1]
      */
     function _setBorrowFactor(CToken cToken, uint newBorrowFactor) external {
-        require(msg.sender == admin, "!admin");
+        ensureAdmin();
         require(newBorrowFactor > 0 && newBorrowFactor <= borrowFactorMaxMantissa, "!borrowFactor");
 
         markets[address(cToken)].borrowFactorMantissa = newBorrowFactor;
@@ -701,9 +710,7 @@ contract Comptroller is ComptrollerV3Storage, ComptrollerInterface, ComptrollerE
      * @return uint 0=success, otherwise a failure. (See enum Error for details)
      */
     function _setPauseGuardian(address newPauseGuardian) public returns (uint) {
-        if (msg.sender != admin) {
-            return fail(Error.UNAUTHORIZED, FailureInfo.SET_PAUSE_GUARDIAN_OWNER_CHECK);
-        }
+        ensureAdmin();
 
         // Save current value for inclusion in log
         address oldPauseGuardian = pauseGuardian;
@@ -718,8 +725,11 @@ contract Comptroller is ComptrollerV3Storage, ComptrollerInterface, ComptrollerE
     }
 
     function _setMintPaused(CToken cToken, bool state) external returns (bool) {
-        require(markets[address(cToken)].isListed, "!listed");
-        require(msg.sender == pauseGuardian || msg.sender == admin, "!admin");
+        ensureListed(markets[address(cToken)]);
+//        require(markets[address(cToken)].isListed, "!listed");
+        ensureAdminOr(pauseGuardian);
+//        require(msg.sender == pauseGuardian || msg.sender == admin, "!admin");
+        require(msg.sender == admin || state == true, "only admin can unpause");
 
         mintGuardianPaused[address(cToken)] = state;
         emit ActionPaused(cToken, "Mint", state);
@@ -727,8 +737,11 @@ contract Comptroller is ComptrollerV3Storage, ComptrollerInterface, ComptrollerE
     }
 
     function _setBorrowPaused(CToken cToken, bool state) external returns (bool) {
-        require(markets[address(cToken)].isListed, "!listed");
-        require(msg.sender == pauseGuardian || msg.sender == admin, "!admin");
+        ensureListed(markets[address(cToken)]);
+//        require(markets[address(cToken)].isListed, "!listed");
+        ensureAdminOr(pauseGuardian);
+//        require(msg.sender == pauseGuardian || msg.sender == admin, "!admin");
+        require(msg.sender == admin || state == true, "only admin can unpause");
 
         borrowGuardianPaused[address(cToken)] = state;
         emit ActionPaused(cToken, "Borrow", state);
@@ -736,7 +749,9 @@ contract Comptroller is ComptrollerV3Storage, ComptrollerInterface, ComptrollerE
     }
 
     function _setTransferPaused(bool state) public returns (bool) {
-        require(msg.sender == pauseGuardian || msg.sender == admin, "!admin");
+        ensureAdminOr(pauseGuardian);
+//        require(msg.sender == pauseGuardian || msg.sender == admin, "!admin");
+        require(msg.sender == admin || state == true, "only admin can unpause");
 
         transferGuardianPaused = state;
         emit ActionPaused("Transfer", state);
@@ -744,7 +759,9 @@ contract Comptroller is ComptrollerV3Storage, ComptrollerInterface, ComptrollerE
     }
 
     function _setSeizePaused(bool state) external returns (bool) {
-        require(msg.sender == pauseGuardian || msg.sender == admin, "!admin");
+        ensureAdminOr(pauseGuardian);
+//        require(msg.sender == pauseGuardian || msg.sender == admin, "!admin");
+        require(msg.sender == admin || state == true, "only admin can unpause");
 
         seizeGuardianPaused = state;
         emit ActionPaused("Seize", state);
@@ -853,7 +870,8 @@ contract Comptroller is ComptrollerV3Storage, ComptrollerInterface, ComptrollerE
     function claimComp(address[] memory holders, CToken[] memory cTokens, bool borrowers, bool suppliers) public {
         for (uint i = 0; i < cTokens.length; i++) {
             CToken cToken = cTokens[i];
-            require(markets[address(cToken)].isListed, "!listed");
+            ensureListed(markets[address(cToken)]);
+//            require(markets[address(cToken)].isListed, "!listed");
             if (borrowers == true) {
                 Exp memory borrowIndex = Exp({mantissa: cToken.borrowIndex()});
                 updateCompBorrowIndex(address(cToken), borrowIndex);
@@ -874,7 +892,8 @@ contract Comptroller is ComptrollerV3Storage, ComptrollerInterface, ComptrollerE
 
     function _addCompMarketInternal(address cToken) internal {
         Market storage market = markets[cToken];
-        require(market.isListed == true, "!listed");
+        ensureListed(market);
+//        require(market.isListed == true, "!listed");
         require(market.isComped == false, "already added");
 
         market.isComped = true;
