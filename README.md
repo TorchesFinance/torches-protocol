@@ -22,10 +22,6 @@ abd fill in all the variables in `.env`
 ### hardhat.config.ts
 Modify `namedAccounts` in `hardhat.config.ts` and add networks if necessary.
 
-```
-npx hardhat deploy --network <NETWORK>
-```
-
 Deployment
 ------------
 
