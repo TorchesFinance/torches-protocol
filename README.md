@@ -6,6 +6,29 @@ The Torches Protocol is an decentralized non-custodial liquidity protocol based 
 Installation
 ------------
 
-    git clone https://github.com/TorchesFinance/torches-protocol/
-    cd torches-protocol
-    yarn install # or `npm install`
+```
+git clone https://github.com/TorchesFinance/torches-protocol/
+cd torches-protocol
+pnpm install # or `yarn install`
+```
+
+Setup
+------------
+
+### .env
+Copy `.env` from `.env.example`
+abd fill in all the variables in `.env`
+
+### hardhat.config.ts
+Modify `namedAccounts` in `hardhat.config.ts` and add networks if necessary.
+
+```
+npx hardhat deploy --network <NETWORK>
+```
+
+Deployment
+------------
+
+```
+npx hardhat deploy --network <NETWORK>
+```

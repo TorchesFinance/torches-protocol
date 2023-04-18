@@ -17,8 +17,8 @@
  * phrase from a file you've .gitignored so it doesn't accidentally become public.
  *
  */
-const HDWalletProvider = require('@truffle/hdwallet-provider');
-const fs = require('fs');
+const HDWalletProvider = require("@truffle/hdwallet-provider");
+const fs = require("fs");
 const mnemonic = fs.readFileSync(".secret").toString().trim();
 
 module.exports = {
@@ -40,53 +40,55 @@ module.exports = {
     // options below to some value.
     //
     development: {
-     host: "127.0.0.1",     // Localhost (default: none)
-     port: 7545,            // Standard Ethereum port (default: none)
-     network_id: "5777",       // Any network (default: none)
-        gas: 80000000
+      host: "127.0.0.1", // Localhost (default: none)
+      port: 7545, // Standard Ethereum port (default: none)
+      network_id: "5777", // Any network (default: none)
+      gas: 80000000,
     },
 
     // Another network with more advanced options...
     // advanced: {
-      // port: 8777,             // Custom port
-      // network_id: 1342,       // Custom network
-      // gas: 8500000,           // Gas sent with each transaction (default: ~6700000)
-      // gasPrice: 20000000000,  // 20 gwei (in wei) (default: 100 gwei)
-      // from: <address>,        // Account to send txs from (default: accounts[0])
-      // websockets: true        // Enable EventEmitter interface for web3 (default: false)
+    // port: 8777,             // Custom port
+    // network_id: 1342,       // Custom network
+    // gas: 8500000,           // Gas sent with each transaction (default: ~6700000)
+    // gasPrice: 20000000000,  // 20 gwei (in wei) (default: 100 gwei)
+    // from: <address>,        // Account to send txs from (default: accounts[0])
+    // websockets: true        // Enable EventEmitter interface for web3 (default: false)
     // },
 
     // Useful for private networks
     // private: {
-      // provider: () => new HDWalletProvider(mnemonic, `https://network.io`),
-      // network_id: 2111,   // This network is yours, in the cloud.
-      // production: true    // Treats this network as if it was a public net. (default: false)
+    // provider: () => new HDWalletProvider(mnemonic, `https://network.io`),
+    // network_id: 2111,   // This network is yours, in the cloud.
+    // production: true    // Treats this network as if it was a public net. (default: false)
     // }
 
-      kcctest: {
-          // provider: () => new HDWalletProvider(mnemonic, `wss://rpc-ws-testnet.kcc.network`),
-          provider: () => new HDWalletProvider(mnemonic, `https://rpc-testnet.kcc.network`),
-          network_id: 322,
-          production: false,
-          timeoutBlocks: 20000,
-          skipDryRun: true,
-          gasPrice: 2100000000,
-          pollingInterval: 16000,
-          networkCheckTimeout: 100000000
-      },
+    kcctest: {
+      // provider: () => new HDWalletProvider(mnemonic, `wss://rpc-ws-testnet.kcc.network`),
+      provider: () =>
+        new HDWalletProvider(mnemonic, `https://rpc-testnet.kcc.network`),
+      network_id: 322,
+      production: false,
+      timeoutBlocks: 20000,
+      skipDryRun: true,
+      gasPrice: 2100000000,
+      pollingInterval: 16000,
+      networkCheckTimeout: 100000000,
+    },
 
-      kcc: {
-          // provider: () => new HDWalletProvider(mnemonic, `wss://rpc-ws-mainnet.kcc.network`),
-          provider: () => new HDWalletProvider(mnemonic, `https://rpc-mainnet.kcc.network`),
-          network_id: "321",   // This network is yours, in the cloud.
-          timeoutBlocks: 200,
-          gasPrice: 2100000000,
-          // gas: 55000000,
-          skipDryRun: true,
-          pollingInterval: 16000,
-          networkCheckTimeout: 100000000,
-          websockets: true
-      },
+    kcc: {
+      // provider: () => new HDWalletProvider(mnemonic, `wss://rpc-ws-mainnet.kcc.network`),
+      provider: () =>
+        new HDWalletProvider(mnemonic, `https://rpc-mainnet.kcc.network`),
+      network_id: "321", // This network is yours, in the cloud.
+      timeoutBlocks: 200,
+      gasPrice: 2100000000,
+      // gas: 55000000,
+      skipDryRun: true,
+      pollingInterval: 16000,
+      networkCheckTimeout: 100000000,
+      websockets: true,
+    },
   },
   plugins: ["truffle-contract-size"],
 
@@ -95,22 +97,21 @@ module.exports = {
     // timeout: 100000
   },
 
-  plugins: [
-    'truffle-contract-size'
-  ],
+  plugins: ["truffle-contract-size"],
 
   // Configure your compilers
   compilers: {
     solc: {
-      version: "0.5.16",    // Fetch exact version from solc-bin (default: truffle's version)
+      version: "0.5.16", // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
-      settings: {          // See the solidity docs for advice about optimization and evmVersion
-       optimizer: {
-         enabled: true,
-         runs: 20
-       },
-      //  evmVersion: "byzantium"
-      }
-    }
-  }
-}
+      settings: {
+        // See the solidity docs for advice about optimization and evmVersion
+        optimizer: {
+          enabled: true,
+          runs: 20,
+        },
+        //  evmVersion: "byzantium"
+      },
+    },
+  },
+};
