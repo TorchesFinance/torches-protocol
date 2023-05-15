@@ -1,0 +1,407 @@
+{
+  "address": "0xa54E2822713989e346bd09AE39b13de67168c4af",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_blocksPerYear",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "baseRatePerYear",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "multiplierPerYear",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "jumpMultiplierPerYear",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "kink_",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blocksPerYear",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "baseRatePerBlock",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "multiplierPerBlock",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "jumpMultiplierPerBlock",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "kink",
+          "type": "uint256"
+        }
+      ],
+      "name": "NewInterestParams",
+      "type": "event"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "baseRatePerBlock",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "blocksPerYear",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "cash",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "borrows",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "reserves",
+          "type": "uint256"
+        }
+      ],
+      "name": "getBorrowRate",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "cash",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "borrows",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "reserves",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "reserveFactorMantissa",
+          "type": "uint256"
+        }
+      ],
+      "name": "getSupplyRate",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "isInterestRateModel",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "jumpMultiplierPerBlock",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "kink",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "multiplierPerBlock",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "cash",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "borrows",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "reserves",
+          "type": "uint256"
+        }
+      ],
+      "name": "utilizationRate",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x2c5bf71475457708f5e61d0c60ad0a94d5c155732eafb96477d745bf9c799bd9",
+  "receipt": {
+    "to": null,
+    "from": "0x8a7799E2F01A707684F5e422C1632e297a7E7DB9",
+    "contractAddress": "0xa54E2822713989e346bd09AE39b13de67168c4af",
+    "transactionIndex": 0,
+    "gasUsed": "496731",
+    "logsBloom": "0x00000000000000001000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020080000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x62b01173cac113ae73c22faf39069a8fa63463d981a8f7347cdb1eaa03f3f3a8",
+    "transactionHash": "0x2c5bf71475457708f5e61d0c60ad0a94d5c155732eafb96477d745bf9c799bd9",
+    "logs": [
+      {
+        "transactionIndex": 0,
+        "blockNumber": 21615983,
+        "transactionHash": "0x2c5bf71475457708f5e61d0c60ad0a94d5c155732eafb96477d745bf9c799bd9",
+        "address": "0xa54E2822713989e346bd09AE39b13de67168c4af",
+        "topics": [
+          "0xd4a5368e470b1a5bcef19c35c285f3c1507a740d3a0044927d719c8a81bb1cdd"
+        ],
+        "data": "0x0000000000000000000000000000000000000000000000000000000000a066800000000000000000000000000000000000000000000000000000000038b3973f000000000000000000000000000000000000000000000000000000035285dcb80000000000000000000000000000000000000000000000000000004272753e6d0000000000000000000000000000000000000000000000000c7d713b49da0000",
+        "logIndex": 0,
+        "blockHash": "0x62b01173cac113ae73c22faf39069a8fa63463d981a8f7347cdb1eaa03f3f3a8"
+      }
+    ],
+    "blockNumber": 21615983,
+    "cumulativeGasUsed": "496731",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [
+    10512000,
+    "10000000000000000",
+    "150000000000000000",
+    "3000000000000000000",
+    "900000000000000000"
+  ],
+  "numDeployments": 3,
+  "solcInputHash": "4611695ea7dda092c6ff3fb3d147bd7b",
+  "metadata": "{\"compiler\":{\"version\":\"0.5.17+commit.d19bba13\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_blocksPerYear\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"baseRatePerYear\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"multiplierPerYear\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"jumpMultiplierPerYear\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"kink_\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blocksPerYear\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"baseRatePerBlock\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"multiplierPerBlock\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"jumpMultiplierPerBlock\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"kink\",\"type\":\"uint256\"}],\"name\":\"NewInterestParams\",\"type\":\"event\"},{\"constant\":true,\"inputs\":[],\"name\":\"baseRatePerBlock\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"blocksPerYear\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"cash\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"borrows\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"reserves\",\"type\":\"uint256\"}],\"name\":\"getBorrowRate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"cash\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"borrows\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"reserves\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"reserveFactorMantissa\",\"type\":\"uint256\"}],\"name\":\"getSupplyRate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"isInterestRateModel\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"jumpMultiplierPerBlock\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"kink\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"multiplierPerBlock\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"cash\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"borrows\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"reserves\",\"type\":\"uint256\"}],\"name\":\"utilizationRate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"author\":\"Torches\",\"methods\":{\"constructor\":{\"params\":{\"baseRatePerYear\":\"The approximate target base APR, as a mantissa (scaled by 1e18)\",\"jumpMultiplierPerYear\":\"The multiplierPerBlock after hitting a specified utilization point\",\"kink_\":\"The utilization point at which the jump multiplier is applied\",\"multiplierPerYear\":\"The rate of increase in interest rate wrt utilization (scaled by 1e18)\"}},\"getBorrowRate(uint256,uint256,uint256)\":{\"params\":{\"borrows\":\"The amount of borrows in the market\",\"cash\":\"The amount of cash in the market\",\"reserves\":\"The amount of reserves in the market\"},\"return\":\"The borrow rate percentage per block as a mantissa (scaled by 1e18)\"},\"getSupplyRate(uint256,uint256,uint256,uint256)\":{\"params\":{\"borrows\":\"The amount of borrows in the market\",\"cash\":\"The amount of cash in the market\",\"reserveFactorMantissa\":\"The current reserve factor for the market\",\"reserves\":\"The amount of reserves in the market\"},\"return\":\"The supply rate percentage per block as a mantissa (scaled by 1e18)\"},\"utilizationRate(uint256,uint256,uint256)\":{\"params\":{\"borrows\":\"The amount of borrows in the market\",\"cash\":\"The amount of cash in the market\",\"reserves\":\"The amount of reserves in the market (currently unused)\"},\"return\":\"The utilization rate as a mantissa between [0, 1e18]\"}},\"title\":\"Derived from Compound's JumpRateModel Contract\"},\"userdoc\":{\"methods\":{\"constructor\":\"Construct an interest rate model\",\"getBorrowRate(uint256,uint256,uint256)\":{\"notice\":\"Calculates the current borrow rate per block, with the error code expected by the market\"},\"getSupplyRate(uint256,uint256,uint256,uint256)\":{\"notice\":\"Calculates the current supply rate per block\"},\"utilizationRate(uint256,uint256,uint256)\":{\"notice\":\"Calculates the utilization rate of the market: `borrows / (cash + borrows - reserves)`\"}}}},\"settings\":{\"compilationTarget\":{\"contracts/CommonJumpInterestModel.sol\":\"CommonJumpInterestModel\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/CommonJumpInterestModel.sol\":{\"content\":\"pragma solidity ^0.5.16;\\n\\nimport \\\"./compound/InterestRateModel.sol\\\";\\nimport \\\"./compound/SafeMath.sol\\\";\\n\\n/**\\n  * @title Derived from Compound's JumpRateModel Contract\\n  * @author Torches\\n  */\\ncontract CommonJumpInterestModel is InterestRateModel {\\n    using SafeMath for uint;\\n\\n    event NewInterestParams(uint blocksPerYear, uint baseRatePerBlock, uint multiplierPerBlock, uint jumpMultiplierPerBlock, uint kink);\\n\\n    /**\\n     * @notice The approximate number of blocks per year that is assumed by the interest rate model\\n     */\\n    uint public blocksPerYear = 10512000;\\n\\n    /**\\n     * @notice The multiplier of utilization rate that gives the slope of the interest rate\\n     */\\n    uint public multiplierPerBlock;\\n\\n    /**\\n     * @notice The base interest rate which is the y-intercept when utilization rate is 0\\n     */\\n    uint public baseRatePerBlock;\\n\\n    /**\\n     * @notice The multiplierPerBlock after hitting a specified utilization point\\n     */\\n    uint public jumpMultiplierPerBlock;\\n\\n    /**\\n     * @notice The utilization point at which the jump multiplier is applied\\n     */\\n    uint public kink;\\n\\n    /**\\n     * @notice Construct an interest rate model\\n     * @param baseRatePerYear The approximate target base APR, as a mantissa (scaled by 1e18)\\n     * @param multiplierPerYear The rate of increase in interest rate wrt utilization (scaled by 1e18)\\n     * @param jumpMultiplierPerYear The multiplierPerBlock after hitting a specified utilization point\\n     * @param kink_ The utilization point at which the jump multiplier is applied\\n     */\\n    constructor(uint _blocksPerYear, uint baseRatePerYear, uint multiplierPerYear, uint jumpMultiplierPerYear, uint kink_) public {\\n        blocksPerYear = _blocksPerYear;\\n        baseRatePerBlock = baseRatePerYear.div(blocksPerYear);\\n        multiplierPerBlock = multiplierPerYear.div(blocksPerYear);\\n        jumpMultiplierPerBlock = jumpMultiplierPerYear.div(blocksPerYear);\\n        kink = kink_;\\n\\n        emit NewInterestParams(blocksPerYear, baseRatePerBlock, multiplierPerBlock, jumpMultiplierPerBlock, kink);\\n    }\\n\\n    /**\\n     * @notice Calculates the utilization rate of the market: `borrows / (cash + borrows - reserves)`\\n     * @param cash The amount of cash in the market\\n     * @param borrows The amount of borrows in the market\\n     * @param reserves The amount of reserves in the market (currently unused)\\n     * @return The utilization rate as a mantissa between [0, 1e18]\\n     */\\n    function utilizationRate(uint cash, uint borrows, uint reserves) public pure returns (uint) {\\n        // Utilization rate is 0 when there are no borrows\\n        if (borrows == 0) {\\n            return 0;\\n        }\\n\\n        return borrows.mul(1e18).div(cash.add(borrows).sub(reserves));\\n    }\\n\\n    /**\\n     * @notice Calculates the current borrow rate per block, with the error code expected by the market\\n     * @param cash The amount of cash in the market\\n     * @param borrows The amount of borrows in the market\\n     * @param reserves The amount of reserves in the market\\n     * @return The borrow rate percentage per block as a mantissa (scaled by 1e18)\\n     */\\n    function getBorrowRate(uint cash, uint borrows, uint reserves) public view returns (uint) {\\n        uint util = utilizationRate(cash, borrows, reserves);\\n\\n        if (util <= kink) {\\n            return util.mul(multiplierPerBlock).div(1e18).add(baseRatePerBlock);\\n        } else {\\n            uint normalRate = kink.mul(multiplierPerBlock).div(1e18).add(baseRatePerBlock);\\n            uint excessUtil = util.sub(kink);\\n            return excessUtil.mul(jumpMultiplierPerBlock).div(1e18).add(normalRate);\\n        }\\n    }\\n\\n    /**\\n     * @notice Calculates the current supply rate per block\\n     * @param cash The amount of cash in the market\\n     * @param borrows The amount of borrows in the market\\n     * @param reserves The amount of reserves in the market\\n     * @param reserveFactorMantissa The current reserve factor for the market\\n     * @return The supply rate percentage per block as a mantissa (scaled by 1e18)\\n     */\\n    function getSupplyRate(uint cash, uint borrows, uint reserves, uint reserveFactorMantissa) public view returns (uint) {\\n        uint oneMinusReserveFactor = uint(1e18).sub(reserveFactorMantissa);\\n        uint borrowRate = getBorrowRate(cash, borrows, reserves);\\n        uint rateToPool = borrowRate.mul(oneMinusReserveFactor).div(1e18);\\n        return utilizationRate(cash, borrows, reserves).mul(rateToPool).div(1e18);\\n    }\\n}\\n\",\"keccak256\":\"0xe432353e8eb26e099ed68cfcd4b1e95c43fa643b5f33dcc67f3e7a3d77519788\"},\"contracts/compound/InterestRateModel.sol\":{\"content\":\"pragma solidity ^0.5.16;\\n\\n/**\\n  * @title Compound's InterestRateModel Interface\\n  * @author Compound\\n  */\\ncontract InterestRateModel {\\n    /// @notice Indicator that this is an InterestRateModel contract (for inspection)\\n    bool public constant isInterestRateModel = true;\\n\\n    /**\\n      * @notice Calculates the current borrow interest rate per block\\n      * @param cash The total amount of cash the market has\\n      * @param borrows The total amount of borrows the market has outstanding\\n      * @param reserves The total amnount of reserves the market has\\n      * @return The borrow rate per block (as a percentage, and scaled by 1e18)\\n      */\\n    function getBorrowRate(uint cash, uint borrows, uint reserves) external view returns (uint);\\n\\n    /**\\n      * @notice Calculates the current supply interest rate per block\\n      * @param cash The total amount of cash the market has\\n      * @param borrows The total amount of borrows the market has outstanding\\n      * @param reserves The total amnount of reserves the market has\\n      * @param reserveFactorMantissa The current reserve factor the market has\\n      * @return The supply rate per block (as a percentage, and scaled by 1e18)\\n      */\\n    function getSupplyRate(uint cash, uint borrows, uint reserves, uint reserveFactorMantissa) external view returns (uint);\\n\\n}\\n\",\"keccak256\":\"0x081c9ed2b26861141f9d133cd6bcfac29f7abbaf12a09881fb2b37741ecbbfee\"},\"contracts/compound/SafeMath.sol\":{\"content\":\"pragma solidity ^0.5.16;\\n\\n// From https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/math/Math.sol\\n// Subject to the MIT license.\\n\\n/**\\n * @dev Wrappers over Solidity's arithmetic operations with added overflow\\n * checks.\\n *\\n * Arithmetic operations in Solidity wrap on overflow. This can easily result\\n * in bugs, because programmers usually assume that an overflow raises an\\n * error, which is the standard behavior in high level programming languages.\\n * `SafeMath` restores this intuition by reverting the transaction when an\\n * operation overflows.\\n *\\n * Using this library instead of the unchecked operations eliminates an entire\\n * class of bugs, so it's recommended to use it always.\\n */\\nlibrary SafeMath {\\n    /**\\n     * @dev Returns the addition of two unsigned integers, reverting on overflow.\\n     *\\n     * Counterpart to Solidity's `+` operator.\\n     *\\n     * Requirements:\\n     * - Addition cannot overflow.\\n     */\\n    function add(uint256 a, uint256 b) internal pure returns (uint256) {\\n        uint256 c = a + b;\\n        require(c >= a, \\\"SafeMath: addition overflow\\\");\\n\\n        return c;\\n    }\\n\\n    /**\\n     * @dev Returns the addition of two unsigned integers, reverting with custom message on overflow.\\n     *\\n     * Counterpart to Solidity's `+` operator.\\n     *\\n     * Requirements:\\n     * - Addition cannot overflow.\\n     */\\n    function add(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {\\n        uint256 c = a + b;\\n        require(c >= a, errorMessage);\\n\\n        return c;\\n    }\\n\\n    /**\\n     * @dev Returns the subtraction of two unsigned integers, reverting on underflow (when the result is negative).\\n     *\\n     * Counterpart to Solidity's `-` operator.\\n     *\\n     * Requirements:\\n     * - Subtraction cannot underflow.\\n     */\\n    function sub(uint256 a, uint256 b) internal pure returns (uint256) {\\n        return sub(a, b, \\\"SafeMath: subtraction underflow\\\");\\n    }\\n\\n    /**\\n     * @dev Returns the subtraction of two unsigned integers, reverting with custom message on underflow (when the result is negative).\\n     *\\n     * Counterpart to Solidity's `-` operator.\\n     *\\n     * Requirements:\\n     * - Subtraction cannot underflow.\\n     */\\n    function sub(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {\\n        require(b <= a, errorMessage);\\n        uint256 c = a - b;\\n\\n        return c;\\n    }\\n\\n    /**\\n     * @dev Returns the multiplication of two unsigned integers, reverting on overflow.\\n     *\\n     * Counterpart to Solidity's `*` operator.\\n     *\\n     * Requirements:\\n     * - Multiplication cannot overflow.\\n     */\\n    function mul(uint256 a, uint256 b) internal pure returns (uint256) {\\n        // Gas optimization: this is cheaper than requiring 'a' not being zero, but the\\n        // benefit is lost if 'b' is also tested.\\n        // See: https://github.com/OpenZeppelin/openzeppelin-contracts/pull/522\\n        if (a == 0) {\\n            return 0;\\n        }\\n\\n        uint256 c = a * b;\\n        require(c / a == b, \\\"SafeMath: multiplication overflow\\\");\\n\\n        return c;\\n    }\\n\\n    /**\\n     * @dev Returns the multiplication of two unsigned integers, reverting on overflow.\\n     *\\n     * Counterpart to Solidity's `*` operator.\\n     *\\n     * Requirements:\\n     * - Multiplication cannot overflow.\\n     */\\n    function mul(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {\\n        // Gas optimization: this is cheaper than requiring 'a' not being zero, but the\\n        // benefit is lost if 'b' is also tested.\\n        // See: https://github.com/OpenZeppelin/openzeppelin-contracts/pull/522\\n        if (a == 0) {\\n            return 0;\\n        }\\n\\n        uint256 c = a * b;\\n        require(c / a == b, errorMessage);\\n\\n        return c;\\n    }\\n\\n    /**\\n     * @dev Returns the integer division of two unsigned integers.\\n     * Reverts on division by zero. The result is rounded towards zero.\\n     *\\n     * Counterpart to Solidity's `/` operator. Note: this function uses a\\n     * `revert` opcode (which leaves remaining gas untouched) while Solidity\\n     * uses an invalid opcode to revert (consuming all remaining gas).\\n     *\\n     * Requirements:\\n     * - The divisor cannot be zero.\\n     */\\n    function div(uint256 a, uint256 b) internal pure returns (uint256) {\\n        return div(a, b, \\\"SafeMath: division by zero\\\");\\n    }\\n\\n    /**\\n     * @dev Returns the integer division of two unsigned integers.\\n     * Reverts with custom message on division by zero. The result is rounded towards zero.\\n     *\\n     * Counterpart to Solidity's `/` operator. Note: this function uses a\\n     * `revert` opcode (which leaves remaining gas untouched) while Solidity\\n     * uses an invalid opcode to revert (consuming all remaining gas).\\n     *\\n     * Requirements:\\n     * - The divisor cannot be zero.\\n     */\\n    function div(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {\\n        // Solidity only automatically asserts when dividing by 0\\n        require(b > 0, errorMessage);\\n        uint256 c = a / b;\\n        // assert(a == b * c + a % b); // There is no case in which this doesn't hold\\n\\n        return c;\\n    }\\n\\n    /**\\n     * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),\\n     * Reverts when dividing by zero.\\n     *\\n     * Counterpart to Solidity's `%` operator. This function uses a `revert`\\n     * opcode (which leaves remaining gas untouched) while Solidity uses an\\n     * invalid opcode to revert (consuming all remaining gas).\\n     *\\n     * Requirements:\\n     * - The divisor cannot be zero.\\n     */\\n    function mod(uint256 a, uint256 b) internal pure returns (uint256) {\\n        return mod(a, b, \\\"SafeMath: modulo by zero\\\");\\n    }\\n\\n    /**\\n     * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),\\n     * Reverts with custom message when dividing by zero.\\n     *\\n     * Counterpart to Solidity's `%` operator. This function uses a `revert`\\n     * opcode (which leaves remaining gas untouched) while Solidity uses an\\n     * invalid opcode to revert (consuming all remaining gas).\\n     *\\n     * Requirements:\\n     * - The divisor cannot be zero.\\n     */\\n    function mod(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {\\n        require(b != 0, errorMessage);\\n        return a % b;\\n    }\\n}\\n\",\"keccak256\":\"0x6653e37ff57a02b7b7f20199bb0fd5685756ced19a67f53328b42c9d2167ffd2\"}},\"version\":1}",
+  "bytecode": "0x608060405262a0668060005534801561001757600080fd5b506040516107e93803806107e9833981810160405260a081101561003a57600080fd5b508051602080830151604084015160608501516080909501516000859055939491939092610073908590879061039d61011c821b17901c565b6002819055506100926000548461011c60201b61039d1790919060201c565b6001819055506100b16000548361011c60201b61039d1790919060201c565b600381905560048290556000546002546001546040805193845260208401929092528282015260608201929092526080810183905290517fd4a5368e470b1a5bcef19c35c285f3c1507a740d3a0044927d719c8a81bb1cdd9181900360a00190a1505050505061020d565b600061016483836040518060400160405280601a81526020017f536166654d6174683a206469766973696f6e206279207a65726f00000000000081525061016b60201b60201c565b9392505050565b600081836101f75760405162461bcd60e51b81526004018080602001828103825283818151815260200191508051906020019080838360005b838110156101bc5781810151838201526020016101a4565b50505050905090810190601f1680156101e95780820380516001836020036101000a031916815260200191505b509250505060405180910390fd5b50600083858161020357fe5b0495945050505050565b6105cd8061021c6000396000f3fe608060405234801561001057600080fd5b50600436106100935760003560e01c8063a385fb9611610066578063a385fb9614610120578063b816881614610128578063b9f9850a14610157578063f14039de1461015f578063fd2da3391461016757610093565b806315f24053146100985780632191f92a146100d35780636e71e2d8146100ef5780638726bb8914610118575b600080fd5b6100c1600480360360608110156100ae57600080fd5b508035906020810135906040013561016f565b60408051918252519081900360200190f35b6100db610247565b604080519115158252519081900360200190f35b6100c16004803603606081101561010557600080fd5b508035906020810135906040013561024c565b6100c161029e565b6100c16102a4565b6100c16004803603608081101561013e57600080fd5b50803590602081013590604081013590606001356102aa565b6100c1610329565b6100c161032f565b6100c1610335565b60008061017d85858561024c565b905060045481116101cf576101c76002546101bb670de0b6b3a76400006101af6001548661033b90919063ffffffff16565b9063ffffffff61039d16565b9063ffffffff6103df16565b915050610240565b60006101fa6002546101bb670de0b6b3a76400006101af60015460045461033b90919063ffffffff16565b905060006102136004548461043990919063ffffffff16565b905061023a826101bb670de0b6b3a76400006101af6003548661033b90919063ffffffff16565b93505050505b9392505050565b600181565b60008261025b57506000610240565b61029661027e83610272878763ffffffff6103df16565b9063ffffffff61043916565b6101af85670de0b6b3a764000063ffffffff61033b16565b949350505050565b60015481565b60005481565b6000806102c5670de0b6b3a76400008463ffffffff61043916565b905060006102d487878761016f565b905060006102f4670de0b6b3a76400006101af848663ffffffff61033b16565b905061031d670de0b6b3a76400006101af836103118c8c8c61024c565b9063ffffffff61033b16565b98975050505050505050565b60035481565b60025481565b60045481565b60008261034a57506000610397565b8282028284828161035757fe5b04146103945760405162461bcd60e51b81526004018080602001828103825260218152602001806105786021913960400191505060405180910390fd5b90505b92915050565b600061039483836040518060400160405280601a81526020017f536166654d6174683a206469766973696f6e206279207a65726f00000000000081525061047b565b600082820183811015610394576040805162461bcd60e51b815260206004820152601b60248201527f536166654d6174683a206164646974696f6e206f766572666c6f770000000000604482015290519081900360640190fd5b600061039483836040518060400160405280601f81526020017f536166654d6174683a207375627472616374696f6e20756e646572666c6f770081525061051d565b600081836105075760405162461bcd60e51b81526004018080602001828103825283818151815260200191508051906020019080838360005b838110156104cc5781810151838201526020016104b4565b50505050905090810190601f1680156104f95780820380516001836020036101000a031916815260200191505b509250505060405180910390fd5b50600083858161051357fe5b0495945050505050565b6000818484111561056f5760405162461bcd60e51b81526020600482018181528351602484015283519092839260449091019190850190808383600083156104cc5781810151838201526020016104b4565b50505090039056fe536166654d6174683a206d756c7469706c69636174696f6e206f766572666c6f77a265627a7a723158203c6a566ed276d7c9b0fa890bbe9a75b449791bec3b1f8abd1f85e90a414d9d0764736f6c63430005110032",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100935760003560e01c8063a385fb9611610066578063a385fb9614610120578063b816881614610128578063b9f9850a14610157578063f14039de1461015f578063fd2da3391461016757610093565b806315f24053146100985780632191f92a146100d35780636e71e2d8146100ef5780638726bb8914610118575b600080fd5b6100c1600480360360608110156100ae57600080fd5b508035906020810135906040013561016f565b60408051918252519081900360200190f35b6100db610247565b604080519115158252519081900360200190f35b6100c16004803603606081101561010557600080fd5b508035906020810135906040013561024c565b6100c161029e565b6100c16102a4565b6100c16004803603608081101561013e57600080fd5b50803590602081013590604081013590606001356102aa565b6100c1610329565b6100c161032f565b6100c1610335565b60008061017d85858561024c565b905060045481116101cf576101c76002546101bb670de0b6b3a76400006101af6001548661033b90919063ffffffff16565b9063ffffffff61039d16565b9063ffffffff6103df16565b915050610240565b60006101fa6002546101bb670de0b6b3a76400006101af60015460045461033b90919063ffffffff16565b905060006102136004548461043990919063ffffffff16565b905061023a826101bb670de0b6b3a76400006101af6003548661033b90919063ffffffff16565b93505050505b9392505050565b600181565b60008261025b57506000610240565b61029661027e83610272878763ffffffff6103df16565b9063ffffffff61043916565b6101af85670de0b6b3a764000063ffffffff61033b16565b949350505050565b60015481565b60005481565b6000806102c5670de0b6b3a76400008463ffffffff61043916565b905060006102d487878761016f565b905060006102f4670de0b6b3a76400006101af848663ffffffff61033b16565b905061031d670de0b6b3a76400006101af836103118c8c8c61024c565b9063ffffffff61033b16565b98975050505050505050565b60035481565b60025481565b60045481565b60008261034a57506000610397565b8282028284828161035757fe5b04146103945760405162461bcd60e51b81526004018080602001828103825260218152602001806105786021913960400191505060405180910390fd5b90505b92915050565b600061039483836040518060400160405280601a81526020017f536166654d6174683a206469766973696f6e206279207a65726f00000000000081525061047b565b600082820183811015610394576040805162461bcd60e51b815260206004820152601b60248201527f536166654d6174683a206164646974696f6e206f766572666c6f770000000000604482015290519081900360640190fd5b600061039483836040518060400160405280601f81526020017f536166654d6174683a207375627472616374696f6e20756e646572666c6f770081525061051d565b600081836105075760405162461bcd60e51b81526004018080602001828103825283818151815260200191508051906020019080838360005b838110156104cc5781810151838201526020016104b4565b50505050905090810190601f1680156104f95780820380516001836020036101000a031916815260200191505b509250505060405180910390fd5b50600083858161051357fe5b0495945050505050565b6000818484111561056f5760405162461bcd60e51b81526020600482018181528351602484015283519092839260449091019190850190808383600083156104cc5781810151838201526020016104b4565b50505090039056fe536166654d6174683a206d756c7469706c69636174696f6e206f766572666c6f77a265627a7a723158203c6a566ed276d7c9b0fa890bbe9a75b449791bec3b1f8abd1f85e90a414d9d0764736f6c63430005110032",
+  "devdoc": {
+    "author": "Torches",
+    "methods": {
+      "constructor": {
+        "params": {
+          "baseRatePerYear": "The approximate target base APR, as a mantissa (scaled by 1e18)",
+          "jumpMultiplierPerYear": "The multiplierPerBlock after hitting a specified utilization point",
+          "kink_": "The utilization point at which the jump multiplier is applied",
+          "multiplierPerYear": "The rate of increase in interest rate wrt utilization (scaled by 1e18)"
+        }
+      },
+      "getBorrowRate(uint256,uint256,uint256)": {
+        "params": {
+          "borrows": "The amount of borrows in the market",
+          "cash": "The amount of cash in the market",
+          "reserves": "The amount of reserves in the market"
+        },
+        "return": "The borrow rate percentage per block as a mantissa (scaled by 1e18)"
+      },
+      "getSupplyRate(uint256,uint256,uint256,uint256)": {
+        "params": {
+          "borrows": "The amount of borrows in the market",
+          "cash": "The amount of cash in the market",
+          "reserveFactorMantissa": "The current reserve factor for the market",
+          "reserves": "The amount of reserves in the market"
+        },
+        "return": "The supply rate percentage per block as a mantissa (scaled by 1e18)"
+      },
+      "utilizationRate(uint256,uint256,uint256)": {
+        "params": {
+          "borrows": "The amount of borrows in the market",
+          "cash": "The amount of cash in the market",
+          "reserves": "The amount of reserves in the market (currently unused)"
+        },
+        "return": "The utilization rate as a mantissa between [0, 1e18]"
+      }
+    },
+    "title": "Derived from Compound's JumpRateModel Contract"
+  },
+  "userdoc": {
+    "methods": {
+      "constructor": "Construct an interest rate model",
+      "getBorrowRate(uint256,uint256,uint256)": {
+        "notice": "Calculates the current borrow rate per block, with the error code expected by the market"
+      },
+      "getSupplyRate(uint256,uint256,uint256,uint256)": {
+        "notice": "Calculates the current supply rate per block"
+      },
+      "utilizationRate(uint256,uint256,uint256)": {
+        "notice": "Calculates the utilization rate of the market: `borrows / (cash + borrows - reserves)`"
+      }
+    }
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 1940,
+        "contract": "contracts/CommonJumpInterestModel.sol:CommonJumpInterestModel",
+        "label": "blocksPerYear",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 1942,
+        "contract": "contracts/CommonJumpInterestModel.sol:CommonJumpInterestModel",
+        "label": "multiplierPerBlock",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 1944,
+        "contract": "contracts/CommonJumpInterestModel.sol:CommonJumpInterestModel",
+        "label": "baseRatePerBlock",
+        "offset": 0,
+        "slot": "2",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 1946,
+        "contract": "contracts/CommonJumpInterestModel.sol:CommonJumpInterestModel",
+        "label": "jumpMultiplierPerBlock",
+        "offset": 0,
+        "slot": "3",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 1948,
+        "contract": "contracts/CommonJumpInterestModel.sol:CommonJumpInterestModel",
+        "label": "kink",
+        "offset": 0,
+        "slot": "4",
+        "type": "t_uint256"
+      }
+    ],
+    "types": {
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      }
+    }
+  }
+}
