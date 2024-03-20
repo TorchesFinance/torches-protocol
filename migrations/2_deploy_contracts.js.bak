@@ -1,0 +1,94 @@
+const InterestModel = artifacts.require("CommonJumpInterestModel");
+const Enzotroller = artifacts.require("Enzotroller");
+const wrappedNativeDelegate = artifacts.require("CWrappedNativeDelegate");
+const wrappedNativeDelegator = artifacts.require("CWrappedNativeDelegator");
+const Unitroller = artifacts.require("Unitroller");
+const CompoundLens = artifacts.require("CompoundLens");
+const ChainLinkPriceOracle = artifacts.require("ChainlinkAdaptor");
+const EnzoConfig = artifacts.require("EnzoConfig");
+const Maximillion = artifacts.require("Maximillion");
+
+// Mock Tokens
+const TetherToken = artifacts.require("TetherToken");
+const MockWETH = artifacts.require("MockWETH");
+
+// Parameters
+const closeFactor = 0.5e18.toString();
+const liquidationIncentive = 1.1e18.toString();
+const reserveFactor = 0.6e18.toString();
+
+// 20 * 60 * 24 * 365 (BlockTime: 3s)
+let blocksPerYear = 10512000;
+
+let addressFactory = {};
+module.exports = async function(deployer, network) {
+    await deployer.deploy(Unitroller);
+    await deployer.deploy(Enzotroller);
+    await deployer.deploy(CompoundLens);
+    await deployer.deploy(EnzoConfig, "0x0000000000000000000000000000000000000000");
+
+    addressFactory["Enzotroller"] = Unitroller.address;
+    addressFactory["EnzoConfig"] = EnzoConfig.address;
+    addressFactory["CompoundLens"] = CompoundLens.address;
+
+    let unitrollerInstance = await Unitroller.deployed();
+    let enzotrollerInstance = await Enzotroller.deployed();
+    let enzoConfigInstance = await EnzoConfig.deployed();
+    let admin = await enzotrollerInstance.admin();
+    console.log("admin: ", admin);
+
+    await unitrollerInstance._setPendingImplementation(Enzotroller.address);
+    await enzotrollerInstance._become(Unitroller.address);
+    await enzoConfigInstance._setPendingSafetyGuardian(admin);
+    await enzoConfigInstance._acceptSafetyGuardian();
+    const baseRatePerYear = 0.03e18.toString();
+    const multiplierPerYear = 0.3e18.toString();
+    const jumpMultiplierPerYear = 5e18.toString();
+    const kink = 0.9e18.toString();
+
+    let proxiedEnzotroller = await Enzotroller.at(Unitroller.address);
+
+    await proxiedEnzotroller._setEnzoConfig(EnzoConfig.address);
+    console.log("Done to set enzo config.", await  proxiedEnzotroller.enzoConfig());
+
+    await proxiedEnzotroller._setLiquidationIncentive(liquidationIncentive);
+    console.log("Done to set liquidation incentive.");
+    let incentive = await proxiedEnzotroller.liquidationIncentiveMantissa();
+    console.log("New incentive: ", incentive.toString());
+
+    await proxiedEnzotroller._setCloseFactor(closeFactor);
+    result = await proxiedEnzotroller.closeFactorMantissa();
+    console.log("Done to set close factor with value: ", result.toString());
+
+    if (network == "bitlayerTest" || network == "bitlayer") {
+        let btcToken = "0xB296bAb2ED122a85977423b602DdF3527582A3DA";
+        let btcPriceSource = "0xae3DB39196012a7bF6D38737192F260cdFE1E7Ec";
+        if (network == "bitlayer") {
+            btcToken = "0x4446fc4eb47f2f6586f9faab68b3498f86c07521";
+            btcPriceSource = "0xAFC9c849b1a784955908d91EE43A3203fBC1f950";
+        }
+        await deployer.deploy(ChainLinkPriceOracle, btcPriceSource);
+        let priceOracleAddress = ChainLinkPriceOracle.address;
+        await deployer.deploy(InterestModel, blocksPerYear, baseRatePerYear, multiplierPerYear, jumpMultiplierPerYear, kink);
+        addressFactory["InterestRateModel"] = InterestModel.address;
+        let proxiedEnzotroller = await Enzotroller.at(Unitroller.address);
+        await proxiedEnzotroller._setPriceOracle(priceOracleAddress);
+        console.log("Done to set price oracle.", await proxiedEnzotroller.oracle());
+        addressFactory["PriceOracle"] = priceOracleAddress;
+        await deployer.deploy(wrappedNativeDelegate);
+        await deployer.deploy(wrappedNativeDelegator, btcToken, Unitroller.address, InterestModel.address, 0.02e18.toString(), "Enzo BTC", "eBTC", 18, admin, wrappedNativeDelegate.address, "0x0");
+        const wrappedNativeInstance = await wrappedNativeDelegator.deployed();
+        await wrappedNativeInstance._setReserveFactor(reserveFactor);
+        console.log("Done to set reserve factor to %s", reserveFactor);
+        await proxiedEnzotroller._supportMarket(wrappedNativeDelegator.address);
+        console.log("Done to support market tBTC: ", wrappedNativeInstance.address);
+        let collateralFactor = 0.8e18.toString();
+        await proxiedEnzotroller._setCollateralFactor(wrappedNativeInstance.address, collateralFactor);
+        console.log("Done to set collateral factor %s for tBTC %s", collateralFactor, wrappedNativeInstance.address);
+        addressFactory["tBTC"] = wrappedNativeInstance.address;
+        await deployer.deploy(Maximillion, wrappedNativeInstance.address);
+        addressFactory["Maximillion"] = Maximillion.address;
+    }
+    console.log("================= Copy and record below addresses ==============")
+    console.log(addressFactory);
+};

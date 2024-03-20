@@ -193,6 +193,15 @@
   },
   {
     "constant": false,
+    "inputs": [],
+    "name": "gulp",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
     "inputs": [
       {
         "internalType": "uint256",

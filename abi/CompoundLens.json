@@ -3,7 +3,7 @@
     "constant": false,
     "inputs": [
       {
-        "internalType": "contract TToken",
+        "internalType": "contract EToken",
         "name": "cToken",
         "type": "address"
       }
@@ -79,7 +79,7 @@
     "constant": false,
     "inputs": [
       {
-        "internalType": "contract TToken",
+        "internalType": "contract EToken",
         "name": "cToken",
         "type": "address"
       }
@@ -172,7 +172,7 @@
     "constant": false,
     "inputs": [
       {
-        "internalType": "contract TToken[]",
+        "internalType": "contract EToken[]",
         "name": "cTokens",
         "type": "address[]"
       }
@@ -265,7 +265,7 @@
     "constant": false,
     "inputs": [
       {
-        "internalType": "contract TToken",
+        "internalType": "contract EToken",
         "name": "cToken",
         "type": "address"
       },
@@ -323,7 +323,7 @@
     "constant": false,
     "inputs": [
       {
-        "internalType": "contract TToken[]",
+        "internalType": "contract EToken[]",
         "name": "cTokens",
         "type": "address[]"
       },

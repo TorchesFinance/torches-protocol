@@ -1,7 +1,7 @@
 pragma solidity ^0.5.16;
 
 import "./compound/CToken.sol";
-import "./TToken.sol";
+import "./EToken.sol";
 import "./IWETH.sol";
 
 /**
@@ -9,7 +9,7 @@ import "./IWETH.sol";
  * @notice CTokens which wrap an EIP-20 underlying
  * @author Compound
  */
-contract CWrappedNative is TToken, CErc20Storage, CCapableDelegateInterface {
+contract CWrappedNative is EToken, CErc20Storage, CCapableDelegateInterface {
     /**
      * @notice Initialize the new money market
      * @param underlying_ The address of the underlying asset

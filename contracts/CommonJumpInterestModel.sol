@@ -5,7 +5,7 @@ import "./compound/SafeMath.sol";
 
 /**
   * @title Derived from Compound's JumpRateModel Contract
-  * @author Torches
+  * @author Enzo
   */
 contract CommonJumpInterestModel is InterestRateModel {
     using SafeMath for uint;

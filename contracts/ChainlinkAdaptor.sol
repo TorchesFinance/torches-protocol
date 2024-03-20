@@ -4,7 +4,7 @@ import "./compound/SafeMath.sol";
 import "./compound/PriceOracle.sol";
 import "./compound/CErc20.sol";
 import "./ChainlinkAggregatorV3Interface.sol";
-import "./TToken.sol";
+import "./EToken.sol";
 
 contract ChainlinkAdaptor is PriceOracle {
     using SafeMath for uint256;
@@ -30,7 +30,7 @@ contract ChainlinkAdaptor is PriceOracle {
     }
 
     function getUnderlyingPrice(CToken cToken) external view returns (uint) {
-        if (TToken(address(cToken)).isNativeToken()) {
+        if (EToken(address(cToken)).isNativeToken()) {
             return 1e18;
         }
 

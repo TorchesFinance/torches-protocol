@@ -1,14 +1,14 @@
 pragma solidity ^0.5.16;
 
 import "./CToken.sol";
-import "../TToken.sol";
+import "../EToken.sol";
 
 /**
  * @title Compound's CErc20 Contract
  * @notice CTokens which wrap an EIP-20 underlying
  * @author Compound
  */
-contract CErc20 is TToken, CErc20Interface, CCapableDelegateInterface {
+contract CErc20 is EToken, CErc20Interface, CCapableDelegateInterface {
     /**
      * @notice Initialize the new money market
      * @param underlying_ The address of the underlying asset

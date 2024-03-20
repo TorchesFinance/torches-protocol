@@ -63,29 +63,15 @@ module.exports = {
       // production: true    // Treats this network as if it was a public net. (default: false)
     // }
 
-      kcctest: {
-          // provider: () => new HDWalletProvider(mnemonic, `wss://rpc-ws-testnet.kcc.network`),
-          provider: () => new HDWalletProvider(mnemonic, `https://rpc-testnet.kcc.network`),
-          network_id: 322,
+    bitlayerTest: {
+          provider: () => new HDWalletProvider(mnemonic, `https://testnet-rpc.bitlayer.org`),
+          network_id: 200810,
           production: false,
           timeoutBlocks: 20000,
           skipDryRun: true,
           gasPrice: 2100000000,
           pollingInterval: 16000,
           networkCheckTimeout: 100000000
-      },
-
-      kcc: {
-          // provider: () => new HDWalletProvider(mnemonic, `wss://rpc-ws-mainnet.kcc.network`),
-          provider: () => new HDWalletProvider(mnemonic, `https://rpc-mainnet.kcc.network`),
-          network_id: "321",   // This network is yours, in the cloud.
-          timeoutBlocks: 200,
-          gasPrice: 2100000000,
-          // gas: 55000000,
-          skipDryRun: true,
-          pollingInterval: 16000,
-          networkCheckTimeout: 100000000,
-          websockets: true
       },
   },
   plugins: ["truffle-contract-size"],
